@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="padding: 20px;">
+    
+    <div style="margin-bottom: 20px;">
+        <h2>🏛️ Principal's Dashboard & Central Bank</h2>
+    </div>
+
+    <div class="stats-box" style="background: #fffbeb; border: 1px solid #fcd34d; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3 style="margin: 0; color: #b45309;">💰 Budget Allocation</h3>
+                <p style="margin: 5px 0; color: #78350f;">Distribute coins to HODs and Teachers for the month.</p>
+            </div>
+            <div style="text-align: right;">
+                <h1 style="margin: 0; font-size: 2.5em; color: #d97706;">{{ circulation }}</h1>
+                <span style="font-size: 0.8em; color: #92400e; font-weight: bold;">COINS IN CIRCULATION</span>
+            </div>
+        </div>
+
+        <form action="/principal/mint" method="POST" style="margin-top: 20px; display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 2; min-width: 250px;">
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Select Staff Member:</label>
+                <select name="user_id" required style="width: 100%; padding: 10px; border: 1px solid #d97706; border-radius: 4px;">
+                    <option value="">-- Choose Recipient --</option>
+                    <optgroup label="Heads of Department (HOD)">
+                        {% for s in staff if s.role == 'hod' %}
+                        <option value="{{ s.id }}">{{ s.name }} ({{ s.branch.name }} Dept)</option>
+                        {% endfor %}
+                    </optgroup>
+                    <optgroup label="Class Tutors">
+                        {% for s in staff if s.role == 'tutor' %}
+                        <option value="{{ s.id }}">{{ s.name }} (Class Tutor)</option>
+                        {% endfor %}
+                    </optgroup>
+                    <optgroup label="Teachers">
+                        {% for s in staff if s.role == 'teacher' %}
+                        <option value="{{ s.id }}">{{ s.name }} (Subject Teacher)</option>
+                        {% endfor %}
+                    </optgroup>
+                </select>
+            </div>
+
+            <div style="flex: 1; min-width: 100px;">
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Amount:</label>
+                <input type="number" name="amount" placeholder="500" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+
+            <div style="flex: 2; min-width: 200px;">
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Reason / Month:</label>
+                <input type="text" name="reason" placeholder="Feb Budget" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+
+            <button type="submit" style="background: #d97706; color: white; border: none; padding: 12px 20px; flex: 1; font-weight: bold; border-radius: 4px; cursor: pointer;">SEND COINS</button>
+        </form>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #ccc; margin: 30px 0;">
+
+    <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
+        
+        <div class="col" style="flex: 1; min-width: 300px;">
+            <h3>1. Create Branch</h3>
+            <form action="/principal/add_branch" method="POST" style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+                <label>Branch Name (e.g., Science)</label>
+                <input type="text" name="name" placeholder="Enter Branch Name" required style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                <button type="submit" style="padding: 8px 15px;">Add Branch</button>
+            </form>
+
+            <h4>Existing Branches:</h4>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                {% for b in branches %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px;">{{ b.name }}</td>
+                    <td style="text-align: right;">
+                        <a href="/edit/branch/{{ b.id }}" style="color: blue; margin-right: 10px;">Edit</a>
+                        <a href="/delete/branch/{{ b.id }}" style="color: red;" onclick="return confirm('Delete this branch?');">Delete</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="2" style="color: red;">No branches yet.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="col" style="flex: 1; min-width: 300px;">
+            <h3>2. Create Class</h3>
+            <form action="/principal/add_class" method="POST" style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+                <label>Class Name (e.g., 10-A)</label>
+                <input type="text" name="name" placeholder="Enter Class Name" required style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                
+                <label>Select Branch</label>
+                <select name="branch_id" required style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                    {% for b in branches %}
+                    <option value="{{ b.id }}">{{ b.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" style="padding: 8px 15px;">Add Class</button>
+            </form>
+            
+            <h4>Existing Classes:</h4>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                {% for c in classes %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px;">{{ c.name }} <small>({{ c.branch.name }})</small></td>
+                    <td style="text-align: right;">
+                        <a href="/edit/class/{{ c.id }}" style="color: blue; margin-right: 10px;">Edit</a>
+                        <a href="/delete/class/{{ c.id }}" style="color: red;" onclick="return confirm('Delete this class?');">Delete</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="2">No classes yet.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 40px; display: flex; gap: 20px; flex-wrap: wrap;">
+        
+        <div class="col">
+            <h3>3. Add Staff / Students</h3>
+            <form action="/principal/add_staff" method="POST" style="background: #eef2ff; padding: 15px; border-radius: 5px;">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="John Doe" required style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                
+                <label>Email (Login ID)</label>
+                <input type="email" name="email" placeholder="user@school.com" required style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                
+                <label>Password</label>
+                <input type="text" name="password" placeholder="Set Password" required style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                
+                <label>Role</label>
+                <select name="role" id="roleSelect" onchange="toggleFields()" style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                    <option value="teacher">Subject Teacher</option>
+                    <option value="tutor">Class Tutor</option>
+                    <option value="hod">Head of Dept (HOD)</option>
+                </select>
+
+                <div id="branchField" style="display: block;">
+                    <label style="color: blue;">Select Department/Branch:</label>
+                    <select name="branch_id" style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                        <option value="">-- Choose Branch --</option>
+                        {% for b in branches %}
+                        <option value="{{ b.id }}">{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="classField" style="display: none;">
+                    <label id="classLabel" style="color: green;">Select Class:</label>
+                    <select name="class_id" style="width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px;">
+                        <option value="">-- Choose Class (Skip if not a Tutor) --</option>
+                        {% for c in classes %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" style="margin-top: 10px; padding: 8px 15px;">Create User</button>
+            </form>
+
+            <script>
+            function toggleFields() {
+                var role = document.getElementById("roleSelect").value;
+                var branchDiv = document.getElementById("branchField");
+                var classDiv = document.getElementById("classField");
+                var classLabel = document.getElementById("classLabel");
+
+                branchDiv.style.display = 'none';
+                classDiv.style.display = 'none';
+
+                if (role === 'tutor') {
+                    classDiv.style.display = 'block';
+                    classLabel.innerText = "Assign Class (Required):";
+                } 
+                else if (role === 'hod') {
+                    branchDiv.style.display = 'block';
+                    classDiv.style.display = 'block';
+                    classLabel.innerText = "Assign Class (Optional - if also a Tutor):";
+                } 
+                else if (role === 'teacher') {
+                    branchDiv.style.display = 'block';
+                }
+            }
+            window.onload = toggleFields;
+            </script>
+        </div>
+
+                <div class="col" style="flex: 1; min-width: 300px;">
+            <h3>Staff List</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #ddd;">
+                    <th style="padding: 8px;">Name</th>
+                    <th style="padding: 8px;">Role</th>
+                    <th style="padding: 8px;">Department/Class</th>
+                    <th style="padding: 8px;">Actions</th>
+                </tr>
+                {% for s in staff if s.role in ['teacher', 'tutor', 'hod'] %}
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ s.name }}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">
+                        {% if s.role == 'hod' %}
+                        <span style="background: #7c3aed; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75em;">HOD</span>
+                        {% elif s.role == 'tutor' %}
+                        <span style="background: #2563eb; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75em;">TUTOR</span>
+                        {% else %}
+                        <span style="background: #059669; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75em;">TEACHER</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 0.9em; color: #666;">
+                        {% if s.branch %}
+                            {{ s.branch.name }}
+                        {% endif %}
+                        {% if s.tutor_of_class %}
+                            {% for c in s.tutor_of_class %}
+                                <br><small>({{ c.name }})</small>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">
+                        <a href="/edit/user/{{ s.id }}" style="color: blue;">Edit</a> | 
+                        <a href="/delete/user/{{ s.id }}" style="color: red;" onclick="return confirm('Remove this user?');">Delete</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="padding: 20px; text-align: center; color: #666;">No staff members yet</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+    <div class="row" style="margin-top: 30px;">
+        <div class="col">
+            <h3>🛒 Manage School Store</h3>
+            <p>Add items that students can buy with their coins.</p>
+            
+            <form action="/principal/add_item" method="POST" style="background: #fff7ed; padding: 15px; border-radius: 5px; border: 1px solid #ffedd5;">
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 2;">
+                        <label>Item Name</label>
+                        <input type="text" name="name" placeholder="e.g. Notebook, Pizza" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Cost (Coins)</label>
+                        <input type="number" name="cost" placeholder="50" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Stock Qty</label>
+                        <input type="number" name="stock" placeholder="100" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                </div>
+                <button type="submit" style="background: #ea580c; margin-top: 10px; padding: 8px 15px; color: white; border: none; border-radius: 4px; cursor: pointer;">Add to Store</button>
+            </form>
+
+            <!-- FILTERABLE INVENTORY SECTION -->
+            <div style="margin-top: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4 style="margin: 0;">Current Inventory</h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="text" id="searchInput" placeholder="Search by name..." onkeyup="filterTable()" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <select id="stockFilter" onchange="filterTable()" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="all">All Stock</option>
+                            <option value="low">Low Stock (< 5)</option>
+                            <option value="out">Out of Stock</option>
+                            <option value="available">In Stock</option>
+                        </select>
+                        <select id="costFilter" onchange="filterTable()" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="all">All Prices</option>
+                            <option value="0-50">0-50 coins</option>
+                            <option value="51-100">51-100 coins</option>
+                            <option value="101+">101+ coins</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table id="inventoryTable" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #eee;">
+                            <th style="padding: 8px; text-align: left;">Item</th>
+                            <th style="padding: 8px; text-align: center;">Cost</th>
+                            <th style="padding: 8px; text-align: center;">Stock</th>
+                            <th style="padding: 8px; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in store_items %}
+                        <tr class="inventory-row" data-name="{{ item.name|lower }}" data-cost="{{ item.cost }}" data-stock="{{ item.stock }}" style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 8px;">{{ item.name }}</td>
+                            <td style="padding: 8px; text-align: center;">{{ item.cost }}</td>
+                            <td style="padding: 8px; text-align: center;">
+                                {% if item.stock == 0 %}
+                                    <span style="color: red; font-weight: bold;">Out of Stock</span>
+                                {% elif item.stock < 5 %}
+                                    <span style="color: orange; font-weight: bold;">{{ item.stock }} (Low)</span>
+                                {% else %}
+                                    <span style="color: green;">{{ item.stock }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 8px; text-align: center;">
+                                <a href="/edit/store/{{ item.id }}" style="color: blue; margin-right: 10px;">Edit</a>
+                                <a href="/delete/store/{{ item.id }}" style="color: red; text-decoration: none;" onclick="return confirm('Delete {{ item.name }}?');">
+                                    ❌ Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr id="emptyRow">
+                            <td colspan="4" style="text-align: center; padding: 20px; color: #666;">No items in store. Add your first item above!</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function filterTable() {
+    var searchInput = document.getElementById("searchInput").value.toLowerCase();
+    var stockFilter = document.getElementById("stockFilter").value;
+    var costFilter = document.getElementById("costFilter").value;
+    var rows = document.getElementsByClassName("inventory-row");
+    var visibleCount = 0;
+
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var name = row.getAttribute("data-name");
+        var cost = parseInt(row.getAttribute("data-cost"));
+        var stock = parseInt(row.getAttribute("data-stock"));
+        
+        var showRow = true;
+
+        // Search filter
+        if (searchInput && !name.includes(searchInput)) {
+            showRow = false;
+        }
+
+        // Stock filter
+        if (stockFilter === "low" && stock >= 5) {
+            showRow = false;
+        } else if (stockFilter === "out" && stock !== 0) {
+            showRow = false;
+        } else if (stockFilter === "available" && stock === 0) {
+            showRow = false;
+        }
+
+        // Cost filter
+        if (costFilter === "0-50" && (cost < 0 || cost > 50)) {
+            showRow = false;
+        } else if (costFilter === "51-100" && (cost < 51 || cost > 100)) {
+            showRow = false;
+        } else if (costFilter === "101+" && cost < 101) {
+            showRow = false;
+        }
+
+        if (showRow) {
+            row.style.display = "";
+            visibleCount++;
+        } else {
+            row.style.display = "none";
+        }
+    }
+
+    // Show/hide empty message
+    var emptyRow = document.getElementById("emptyRow");
+    if (emptyRow) {
+        if (visibleCount === 0 && rows.length > 0) {
+            emptyRow.style.display = "";
+            emptyRow.cells[0].innerText = "No items match your filters.";
+        } else {
+            emptyRow.style.display = "none";
+        }
+    }
+}
+</script>
+{% endblock %}

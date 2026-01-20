@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="min-height: 80vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px;">
+    <div style="width: 100%; max-width: 420px; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative; overflow: hidden;">
+        
+        <!-- Decorative header -->
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #f093fb, #f5576c);"></div>
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2em;">
+                📝
+            </div>
+            <h2 style="margin: 0; color: #1f2937; font-size: 1.8em;">Create Account</h2>
+            <p style="color: #6b7280; margin: 10px 0 0;">Join ScholarCash as a student</p>
+        </div>
+
+        <form action="/register" method="POST" style="margin-bottom: 20px;">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Full Name</label>
+                <input type="text" name="name" placeholder="John Doe" required 
+                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; transition: all 0.3s; box-sizing: border-box;"
+                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
+                    onblur="this.style.borderColor='#e5e7eb';">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Email Address</label>
+                <input type="email" name="email" placeholder="you@student.school" required 
+                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; transition: all 0.3s; box-sizing: border-box;"
+                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
+                    onblur="this.style.borderColor='#e5e7eb';">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Password</label>
+                <input type="password" name="password" placeholder="Create a strong password" required 
+                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; transition: all 0.3s; box-sizing: border-box;"
+                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
+                    onblur="this.style.borderColor='#e5e7eb';">
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Select Your Class</label>
+                <select name="class_id" required 
+                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; background: white; cursor: pointer; transition: all 0.3s; box-sizing: border-box;"
+                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
+                    onblur="this.style.borderColor='#e5e7eb';">
+                    <option value="">-- Choose your class --</option>
+                    {% for c in classes %}
+                    <option value="{{ c.id }}">{{ c.name }} ({{ c.branch.name }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" 
+                style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(245, 87, 108, 0.3)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                Create Account
+            </button>
+        </form>
+
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+            <p style="color: #6b7280; margin: 0;">
+                Already have an account? 
+                <a href="/login" style="color: #f5576c; text-decoration: none; font-weight: 600;">Sign in here</a>
+            </p>
+        </div>
+
+        <!-- Info note -->
+        <div style="background: #fef3f2; padding: 15px; border-radius: 8px; margin-top: 20px; font-size: 0.85em; border-left: 4px solid #f5576c;">
+            <p style="margin: 0; color: #991b1b;">
+                <strong>💡 Note:</strong> Teachers and staff must be registered by the Principal.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

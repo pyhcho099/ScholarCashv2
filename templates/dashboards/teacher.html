@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+
+    <!-- Header with Role Badges -->
+    <div style="margin-bottom: 25px;">
+        <h1 style="margin: 0; color: #1f2937; font-size: 1.8em;">Teacher Dashboard</h1>
+        <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+            {% if is_hod %}
+            <span style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">👑 HOD</span>
+            {% endif %}
+            {% if is_tutor %}
+            <span style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">🎓 Class Tutor</span>
+            {% endif %}
+            {% if is_subject_teacher %}
+            <span style="background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">📚 Subject Teacher</span>
+            {% endif %}
+            {% if my_branch %}
+            <span style="background: #f3f4f6; color: #374151; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">🏛️ {{ my_branch.name }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Budget Card -->
+    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 25px; border-radius: 12px; margin-bottom: 25px; text-align: center; border: 2px solid #166534; position: relative;">
+        <div style="position: absolute; top: 15px; right: 20px; font-size: 3em; opacity: 0.2;">💰</div>
+        <h2 style="margin: 0 0 10px; color: #166534; font-size: 1.1em;">My Budget</h2>
+        <h1 style="color: #166534; font-size: 3em; margin: 0; font-weight: 800;">{{ current_user.balance }}</h1>
+        <p style="color: #166534; margin: 10px 0 0;">coins available</p>
+        
+        {% if current_user.balance < 50 %}
+        <div style="background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin-top: 15px; font-weight: 600;">
+            ⚠️ Low Balance! Contact Principal for more funds
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- HOD Dashboard Section -->
+    {% if is_hod %}
+    <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #a855f7;">
+        <h3 style="margin: 0 0 20px; color: #7c3aed; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.3em;">👑</span> HOD Control Panel
+        </h3>
+        
+        <!-- Branch Stats -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Students</p>
+                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.students }}</p>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Teachers</p>
+                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.teachers }}</p>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Classes</p>
+                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.classes }}</p>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Total Coins</p>
+                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.balance }}</p>
+            </div>
+        </div>
+
+        <!-- Allocate to Teachers -->
+        {% if branch_staff %}
+        <div style="background: white; padding: 20px; border-radius: 8px;">
+            <h4 style="margin: 0 0 15px; color: #374151;">💸 Allocate Coins to Branch Teachers</h4>
+            <form action="/hod/allocate" method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex: 2; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #4b5563;">Select Teacher</label>
+                    <select name="teacher_id" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px;">
+                        <option value="">-- Choose Teacher --</option>
+                        {% for staff in branch_staff %}
+                        <option value="{{ staff.id }}">{{ staff.name }} ({{ staff.role|upper }}) - Balance: {{ staff.balance }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 100px;">
+                    <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #4b5563;">Amount</label>
+                    <input type="number" name="amount" required min="1" max="{{ current_user.balance }}" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px;">
+                </div>
+                <div style="flex: 2; min-width: 150px;">
+                    <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #4b5563;">Reason</label>
+                    <input type="text" name="reason" placeholder="Monthly budget" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px;">
+                </div>
+                <button type="submit" style="background: #7c3aed; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                    Allocate
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Main Actions Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin-bottom: 25px;">
+        
+        <!-- Send Coins Card -->
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); border: 1px solid #e5e7eb;">
+            <h3 style="margin: 0 0 20px; color: #1f2937; display: flex; align-items: center; gap: 10px;">
+                <span style="background: #166534; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9em;">📲</span>
+                Send Coins to Students
+            </h3>
+            
+            {% set all_students = branch_students if is_subject_teacher or is_hod else class_students %}
+            
+            {% if all_students %}
+            <form action="/teacher/transfer" method="POST">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 6px; color: #374151; font-weight: 600; font-size: 0.9em;">Select Student</label>
+                    <select name="receiver_id" required style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.95em;">
+                        <option value="">-- Choose Student --</option>
+                        {% for student in all_students %}
+                        <option value="{{ student.id }}">
+                            {{ student.name }} ({{ student.assigned_class.name }}) - Balance: {{ student.balance }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 15px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 6px; color: #374151; font-weight: 600; font-size: 0.9em;">Amount</label>
+                        <input type="number" name="amount" placeholder="10" required min="1" max="{{ current_user.balance }}" 
+                            style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 6px; color: #374151; font-weight: 600; font-size: 0.9em;">Reason</label>
+                        <input type="text" name="reason" placeholder="Good behavior, Homework..." required 
+                            style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                    </div>
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 12px; background: #166534; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    Send Coins →
+                </button>
+            </form>
+            {% else %}
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; text-align: center; color: #6b7280;">
+                <p>No students available in your scope</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Info Card -->
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); border: 1px solid #e5e7eb;">
+            <h3 style="margin: 0 0 20px; color: #1f2937;">My Scope</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                {% if is_hod %}
+                <div style="background: #faf5ff; padding: 15px; border-radius: 8px; border-left: 4px solid #a855f7;">
+                    <p style="margin: 0; color: #6b7280; font-size: 0.85em;">HOD Of</p>
+                    <p style="margin: 5px 0 0; font-weight: 700; color: #7c3aed;">{{ my_branch.name }} Branch</p>
+                    <p style="margin: 5px 0 0; font-size: 0.85em; color: #6b7280;">Manages all teachers & students</p>
+                </div>
+                {% endif %}
+                
+                {% if is_tutor %}
+                <div style="background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Tutor Of</p>
+                    {% for cls in current_user.tutor_of_class %}
+                    <p style="margin: 5px 0 0; font-weight: 700; color: #2563eb;">{{ cls.name }}</p>
+                    {% endfor %}
+                    <p style="margin: 5px 0 0; font-size: 0.85em; color: #6b7280;">Can add/manage class students</p>
+                </div>
+                {% endif %}
+                
+                {% if is_subject_teacher and not is_hod %}
+                <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Teaching In</p>
+                    <p style="margin: 5px 0 0; font-weight: 700; color: #15803d;">{{ my_branch.name }} Branch</p>
+                    <p style="margin: 5px 0 0; font-size: 0.85em; color: #6b7280;">Can reward any branch student</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor Class Management -->
+    {% if is_tutor %}
+    <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #3b82f6; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+            <span style="background: #2563eb; color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em;">🎓</span>
+            <div>
+                <h3 style="margin: 0; color: #1f2937;">Class Tutor Management</h3>
+                <p style="margin: 5px 0 0; color: #6b7280; font-size: 0.9em;">
+                    Managing: {% for cls in current_user.tutor_of_class %}{{ cls.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Add Student Form -->
+        <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="margin: 0 0 15px; color: #1e40af;">➕ Add New Student</h4>
+            <form action="/tutor/add_student" method="POST">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" name="name" placeholder="Student Full Name" required 
+                        style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
+                    <input type="email" name="email" placeholder="student@email.com" required 
+                        style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
+                    <button type="submit" style="background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                        Add Student
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Class Students Table -->
+        <h4 style="margin: 0 0 15px; color: #1f2937;">Class Students ({{ class_students|length }})</h4>
+        
+        {% if class_students %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+                <thead>
+                    <tr style="background: #f8fafc;">
+                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Name</th>
+                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Email</th>
+                        <th style="padding: 12px; text-align: center; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Balance</th>
+                        <th style="padding: 12px; text-align: center; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in class_students %}
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 12px; font-weight: 500; color: #1e293b;">{{ student.name }}</td>
+                        <td style="padding: 12px; color: #64748b; font-size: 0.9em;">{{ student.email }}</td>
+                        <td style="padding: 12px; text-align: center;">
+                            <span style="background: {{ 'dcfce7' if student.balance > 0 else 'fee2e2' }}; color: {{ '166534' if student.balance > 0 else '991b1b' }}; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 0.9em;">
+                                {{ student.balance }} 💰
+                            </span>
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <a href="/edit/user/{{ student.id }}" style="color: #2563eb; text-decoration: none; margin-right: 15px; font-weight: 500;">Edit</a>
+                            <a href="/delete/user/{{ student.id }}" style="color: #dc2626; text-decoration: none; font-weight: 500;" onclick="return confirm('Remove {{ student.name }}?');">Remove</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #6b7280; background: #f8fafc; border-radius: 8px;">
+            <p>No students in your class yet. Add students above.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Transaction History -->
+    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); border: 1px solid #e5e7eb;">
+        <h3 style="margin: 0 0 20px; color: #1f2937;">📜 Recent Transactions</h3>
+        
+        {% if transactions %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+                <thead>
+                    <tr style="background: #f8fafc;">
+                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Date</th>
+                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Recipient</th>
+                        <th style="padding: 12px; text-align: center; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Amount</th>
+                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in transactions %}
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 12px; color: #64748b; font-size: 0.9em; white-space: nowrap;">
+                            {{ tx.timestamp.strftime('%d %b %Y, %H:%M') }}
+                        </td>
+                        <td style="padding: 12px; color: #1e293b; font-weight: 500;">
+                            {{ tx.receiver.name if tx.receiver else 'Unknown' }}
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <span style="color: #dc2626; font-weight: 700;">-{{ tx.amount }}</span>
+                        </td>
+                        <td style="padding: 12px; color: #64748b;">{{ tx.reason }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #6b7280;">
+            <p>No transactions yet. Start rewarding students!</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

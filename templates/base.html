@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScholarCash System</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; }
+        .navbar { background-color: #333; overflow: hidden; color: white; padding: 15px; }
+        .navbar a { float: right; color: white; text-decoration: none; margin-left: 20px; }
+        .container { padding: 20px; }
+        .flash-messages { padding: 10px; text-align: center; }
+        .flash-error { background: #ffdddd; color: red; border: 1px solid red; padding: 10px; margin-bottom: 10px;}
+        .flash-success { background: #ddffdd; color: green; border: 1px solid green; padding: 10px; margin-bottom: 10px;}
+        
+        /* Dashboard Cards */
+        .stats-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .row { display: flex; gap: 20px; }
+        .col { flex: 1; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* Store Grid */
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .item-card { background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-buy { background: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px; }
+        
+        /* Forms */
+        input, select { padding: 8px; width: 100%; margin: 5px 0 15px 0; box-sizing: border-box; }
+        button { background: #007bff; color: white; padding: 10px 15px; border: none; cursor: pointer; width: 100%; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <strong>ScholarCash V2</strong>
+        {% if current_user.is_authenticated %}
+            <a href="/logout">Logout ({{ current_user.role|upper }})</a>
+        {% endif %}
+    </div>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-success">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

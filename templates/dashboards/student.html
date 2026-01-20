@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Mobile-First CSS specific for Student Dashboard */
+    .dashboard-header {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .balance-huge { font-size: 3em; font-weight: bold; margin: 10px 0; }
+    
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    
+    .qr-container { text-align: center; padding: 20px; border: 2px dashed #ccc; border-radius: 10px; margin-bottom: 20px; }
+    .qr-container img { max-width: 200px; height: auto; }
+    
+    .item-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
+    .price-tag { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 15px; font-weight: bold; }
+    
+    .receipt-ticket { 
+        background: #fffbeb; border-left: 5px solid #d97706; padding: 10px; margin-bottom: 10px; 
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .code-display { font-family: monospace; font-size: 1.2em; letter-spacing: 2px; font-weight: bold; }
+</style>
+
+<div class="dashboard-header">
+    <h3>👋 Hi, {{ current_user.name }}</h3>
+    <div class="balance-huge">{{ current_user.balance }}</div>
+    <div>SCHOLAR COINS</div>
+</div>
+
+<div class="grid-container">
+    
+    <div class="card">
+        <h3>🆔 My ID Card</h3>
+        <p style="color: #666; font-size: 0.9em; text-align: center;">Show this to your teacher to receive coins.</p>
+        
+        <div class="qr-container">
+            <img src="/student/qr_image" alt="My QR Code">
+            <br>
+            <small>ID: USER-{{ current_user.id }}</small>
+        </div>
+
+        <h4>📜 Recent History</h4>
+        <ul style="list-style: none; padding: 0;">
+            {% for tx in transactions %}
+            <li style="border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between;">
+                <span>
+                    {% if tx.receiver_id == current_user.id %}
+                        <span style="color: green;">⬇️ Received</span>
+                    {% else %}
+                        <span style="color: red;">⬆️ Spent</span>
+                    {% endif %}
+                    <br><small style="color: #999;">{{ tx.reason }}</small>
+                </span>
+                <span style="font-weight: bold;">
+                    {% if tx.receiver_id == current_user.id %}+{% else %}-{% endif %}
+                    {{ tx.amount }}
+                </span>
+            </li>
+            {% else %}
+            <li style="color: #999; text-align: center;">No transactions yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>🛒 Reward Store</h3>
+        <div style="max-height: 400px; overflow-y: auto;">
+            {% for item in store_items %}
+            <div class="item-card">
+                <h4>{{ item.name }}</h4>
+                <p><span class="price-tag">{{ item.cost }} Coins</span></p>
+                <p style="font-size: 0.8em; color: #666;">{{ item.stock }} left in stock</p>
+                
+                {% if current_user.balance >= item.cost %}
+                    <a href="/student/buy/{{ item.id }}" class="btn-buy" style="width: 100%; display: block;" 
+                       onclick="return confirm('Spend {{ item.cost }} coins for {{ item.name }}?');">
+                       Buy Now
+                    </a>
+                {% else %}
+                    <button disabled style="background: #ccc; cursor: not-allowed; width: 100%;">Need Coins</button>
+                {% endif %}
+            </div>
+            {% else %}
+            <p style="text-align: center; color: #999;">Store is empty.</p>
+            {% endfor %}
+        </div>
+
+        <h3 style="margin-top: 30px;">🧾 My Receipts</h3>
+        <p style="font-size: 0.8em; color: #666;">Show code to claim item.</p>
+        
+        {% for r in receipts %}
+        <div class="receipt-ticket">
+            <div>
+                <strong>{{ r.item.name }}</strong><br>
+                <small>{{ r.timestamp.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <div style="text-align: right;">
+                <div class="code-display">{{ r.unique_code }}</div>
+                <small style="color: {{ 'green' if r.status == 'CLAIMED' else 'orange' }}">
+                    {{ r.status }}
+                </small>
+            </div>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: #999;">No purchases yet.</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
