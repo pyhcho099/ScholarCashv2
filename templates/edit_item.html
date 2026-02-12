@@ -27,13 +27,19 @@
             <label>Email:</label>
             <input type="email" name="email" value="{{ item.email }}" required>
             
+            <!-- NEW: Password field for all users including students -->
+            <label>New Password (leave blank to keep current):</label>
+            <input type="text" name="password" placeholder="Enter new password or leave blank">
+            
             <label>Role:</label>
             <select name="role" id="roleSelect" onchange="toggleFields()">
+                <option value="student" {% if item.role == 'student' %}selected{% endif %}>Student</option>
                 <option value="teacher" {% if item.role == 'teacher' %}selected{% endif %}>Subject Teacher</option>
                 <option value="tutor" {% if item.role == 'tutor' %}selected{% endif %}>Class Tutor</option>
                 <option value="hod" {% if item.role == 'hod' %}selected{% endif %}>HOD</option>
             </select>
 
+            <!-- Branch Selection (for Teachers, HODs) -->
             <div id="branchField" style="display: none; margin-top: 15px;">
                 <label style="color: blue;">Assign to Branch:</label>
                 <select name="branch_id">
@@ -46,12 +52,13 @@
                 </select>
             </div>
 
+            <!-- Class Selection (for Students and Tutors) -->
             <div id="classField" style="display: none; margin-top: 15px;">
-                <label style="color: green;">Assign as Tutor for Class:</label>
+                <label style="color: green;" id="classLabel">Assign to Class:</label>
                 <select name="class_id">
                     <option value="">-- No Class --</option>
                     {% for c in classes %}
-                    <option value="{{ c.id }}" {% if c.tutor_id == item.id %}selected{% endif %}>
+                    <option value="{{ c.id }}" {% if item.class_id == c.id or c.tutor_id == item.id %}selected{% endif %}>
                         {{ c.name }} ({{ c.branch.name }})
                     </option>
                     {% endfor %}
@@ -61,31 +68,39 @@
 
         <div style="display: flex; gap: 10px; margin-top: 20px;">
             <button type="submit" style="background: #2563eb;">Save Changes</button>
-            <a href="/principal" style="padding: 10px; background: #64748b; color: white; border-radius: 4px; text-decoration: none; text-align: center; flex: 1;">Cancel</a>
+            <a href="{{ '/principal' if current_user.role == 'principal' else '/teacher' }}" style="padding: 10px; background: #64748b; color: white; border-radius: 4px; text-decoration: none; text-align: center; flex: 1;">Cancel</a>
         </div>
     </form>
 </div>
 
 {% if type == 'user' %}
-<<script>
+<script>
     function toggleFields() {
         var role = document.getElementById("roleSelect").value;
         var branchDiv = document.getElementById("branchField");
         var classDiv = document.getElementById("classField");
+        var classLabel = document.getElementById("classLabel");
+
+        // Reset
+        branchDiv.style.display = 'none';
+        classDiv.style.display = 'none';
 
         if (role === 'student') {
             branchDiv.style.display = 'none';
-            classDiv.style.display = 'block'; // Students need a class
+            classDiv.style.display = 'block';
+            classLabel.innerText = "Assign to Class (Required):";
         } 
         else if (role === 'tutor') {
-            branchDiv.style.display = 'none'; // Tutors implied branch via class
+            branchDiv.style.display = 'none';
             classDiv.style.display = 'block';
+            classLabel.innerText = "Tutor for Class:";
         } 
         else if (role === 'hod') {
-            branchDiv.style.display = 'block'; // HOD needs a branch
-            classDiv.style.display = 'block';  // HOD *CAN* have a class too (Optional)
+            branchDiv.style.display = 'block';
+            classDiv.style.display = 'block';
+            classLabel.innerText = "Optional - Also Tutor for Class:";
         } 
-        else { // Teacher
+        else if (role === 'teacher') {
             branchDiv.style.display = 'block';
             classDiv.style.display = 'none';
         }
@@ -93,6 +108,5 @@
     // Run on load
     window.onload = toggleFields;
 </script>
-
 {% endif %}
 {% endblock %}

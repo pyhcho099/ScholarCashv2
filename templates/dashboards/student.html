@@ -100,25 +100,28 @@
         </div>
 
         <h3 style="margin-top: 30px;">🧾 My Receipts</h3>
-        <p style="font-size: 0.8em; color: #666;">Show code to claim item.</p>
-        
-        {% for r in receipts %}
-        <div class="receipt-ticket">
-            <div>
-                <strong>{{ r.item.name }}</strong><br>
-                <small>{{ r.timestamp.strftime('%Y-%m-%d') }}</small>
-            </div>
-            <div style="text-align: right;">
-                <div class="code-display">{{ r.unique_code }}</div>
-                <small style="color: {{ 'green' if r.status == 'CLAIMED' else 'orange' }}">
-                    {{ r.status }}
-                </small>
-            </div>
-        </div>
-        {% else %}
-        <p style="text-align: center; color: #999;">No purchases yet.</p>
-        {% endfor %}
+<p style="font-size: 0.8em; color: #666;">Show this code to claim your item at the store.</p>
+
+{% for r in receipts %}
+<div class="receipt-ticket">
+    <div>
+        <strong>{{ r.item.name }}</strong><br>
+        <small>{{ r.timestamp.strftime('%Y-%m-%d') }}</small>
+    </div>
+    <div style="text-align: right;">
+        <div class="code-display">{{ r.unique_code }}</div>
+    </div>
+</div>
+{% else %}
+<p style="text-align: center; color: #999;">No purchases yet.</p>
+{% endfor %}
     </div>
 
 </div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+// QR scanner implementation for students to scan teacher codes
+</script>
 {% endblock %}

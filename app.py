@@ -44,6 +44,14 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
+            
+            # Check if mobile device
+            user_agent = request.headers.get('User-Agent', '').lower()
+            is_mobile = any(device in user_agent for device in ['mobile', 'android', 'iphone', 'ipad'])
+            
+            if user.role in ['teacher', 'tutor', 'hod'] and is_mobile:
+                return redirect(url_for('mobile_dashboard'))
+            
             return redirect(url_for('home'))
         flash("Invalid Credentials", "error")
     return render_template('login.html')
@@ -177,8 +185,28 @@ def mint_coins():
 @app.route('/edit/user/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(id):
-    if current_user.role != 'principal': return "Denied", 403
+    # Allow principal OR tutor (for their own students) to edit
     user = User.query.get(id)
+    
+    if not user:
+        flash("User not found", "error")
+        return redirect(url_for('home'))
+    
+    # Check permissions
+    can_edit = False
+    
+    if current_user.role == 'principal':
+        can_edit = True
+    elif current_user.role == 'tutor' and user.role == 'student':
+        # Tutor can edit students in their class
+        if current_user.tutor_of_class:
+            tutor_class_ids = [c.id for c in current_user.tutor_of_class]
+            if user.class_id in tutor_class_ids:
+                can_edit = True
+    
+    if not can_edit:
+        return "Denied", 403
+    
     branches = Branch.query.all()
     classes = ClassRoom.query.all()
 
@@ -186,41 +214,66 @@ def edit_user(id):
         user.name = request.form.get('name')
         user.email = request.form.get('email')
         new_role = request.form.get('role')
-        user.role = new_role
         
-        # 1. HANDLE BRANCH (For Teachers & HODs)
-        if new_role in ['teacher', 'hod']:
-            branch_id = request.form.get('branch_id')
-            user.branch_id = int(branch_id) if branch_id else None
+        # Handle password update
+        new_password = request.form.get('password')
+        if new_password and new_password.strip():
+            user.password = generate_password_hash(new_password, method='pbkdf2:sha256')
+        
+        # Only principal can change roles
+        if current_user.role == 'principal':
+            user.role = new_role
+            
+            # Handle Branch (For Teachers & HODs)
+            if new_role in ['teacher', 'hod']:
+                branch_id = request.form.get('branch_id')
+                user.branch_id = int(branch_id) if branch_id else None
 
-        # 2. HANDLE CLASS TUTORING (For Tutors & HODs)
-        # HODs can now be tutors too!
-        if new_role in ['tutor', 'hod']:
-            class_id = request.form.get('class_id')
-            
-            # First, remove them from any old class they tutored
-            old_class = ClassRoom.query.filter_by(tutor_id=user.id).first()
-            if old_class: old_class.tutor_id = None
-            
-            # If a class was selected, assign them
-            if class_id:
-                new_class = ClassRoom.query.get(int(class_id))
-                new_class.tutor_id = user.id
+            # Handle Class Tutoring (For Tutors & HODs)
+            if new_role in ['tutor', 'hod']:
+                class_id = request.form.get('class_id')
                 
-                # Auto-fix branch if they didn't select one (Safety net)
-                if not user.branch_id:
-                    user.branch_id = new_class.branch_id
+                # Remove from old class
+                old_class = ClassRoom.query.filter_by(tutor_id=user.id).first()
+                if old_class:
+                    old_class.tutor_id = None
+                
+                # Assign to new class
+                if class_id:
+                    new_class = ClassRoom.query.get(int(class_id))
+                    new_class.tutor_id = user.id
+                    if not user.branch_id:
+                        user.branch_id = new_class.branch_id
 
-        # 3. HANDLE STUDENTS
-        elif new_role == 'student':
-            user.class_id = int(request.form.get('class_id'))
+            # Handle Students
+            elif new_role == 'student':
+                class_id = request.form.get('class_id')
+                if class_id:
+                    user.class_id = int(class_id)
+                    # Update branch based on class
+                    cls = ClassRoom.query.get(int(class_id))
+                    if cls:
+                        user.branch_id = cls.branch_id
+        
+        # Tutor can only update student's class, not role
+        elif current_user.role == 'tutor' and user.role == 'student':
+            class_id = request.form.get('class_id')
+            if class_id:
+                user.class_id = int(class_id)
+                cls = ClassRoom.query.get(int(class_id))
+                if cls:
+                    user.branch_id = cls.branch_id
 
         db.session.commit()
         flash('User updated!', 'success')
-        return redirect(url_for('dashboard_principal'))
+        
+        # Redirect based on who edited
+        if current_user.role == 'principal':
+            return redirect(url_for('dashboard_principal'))
+        else:
+            return redirect(url_for('dashboard_teacher'))
         
     return render_template('edit_item.html', item=user, type='user', branches=branches, classes=classes)
-
 
 @app.route('/edit/branch/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -565,21 +618,116 @@ def tutor_add_student():
     
     name = request.form.get('name')
     email = request.form.get('email')
+    password = request.form.get('password')  # ADD THIS LINE
+    
+    # Validate password exists
+    if not password:
+        flash("Password is required!", "error")
+        return redirect(url_for('dashboard_teacher'))
     
     if User.query.filter_by(email=email).first():
         flash("Email already exists!", "error")
     else:
         # Create Student linked to Tutor's Class & Branch
         new_student = User(name=name, email=email, role='student',
-                           password=generate_password_hash("student123", method='pbkdf2:sha256'),
+                           password=generate_password_hash(password, method='pbkdf2:sha256'),  # USE FORM PASSWORD
                            class_id=my_class.id,
                            branch_id=my_class.branch_id)
         
         db.session.add(new_student)
         db.session.commit()
-        flash(f"Added {name} to Class {my_class.name}", "success")
+        flash(f"Added {name} to Class {my_class.name}. Password set successfully.", "success")
         
     return redirect(url_for('dashboard_teacher'))
+
+@app.route('/mobile')
+@login_required
+def mobile_dashboard():
+    """Mobile-optimized money transfer interface"""
+    if current_user.role not in ['teacher', 'tutor', 'hod']:
+        return "Denied", 403
+    
+    # Get students based on role
+    students = []
+    if current_user.role == 'tutor' and current_user.tutor_of_class:
+        for cls in current_user.tutor_of_class:
+            students.extend(User.query.filter_by(role='student', class_id=cls.id).all())
+    elif current_user.branch_id:
+        branch_classes = ClassRoom.query.filter_by(branch_id=current_user.branch_id).all()
+        class_ids = [c.id for c in branch_classes]
+        if class_ids:
+            students = User.query.filter(User.role == 'student', User.class_id.in_(class_ids)).all()
+    
+    # Remove duplicates
+    seen = set()
+    unique_students = []
+    for s in students:
+        if s.id not in seen:
+            seen.add(s.id)
+            unique_students.append(s)
+    students = unique_students
+    
+    # Get recent transactions
+    transactions = Transaction.query.filter(
+        (Transaction.sender_id == current_user.id) | (Transaction.receiver_id == current_user.id)
+    ).order_by(Transaction.timestamp.desc()).limit(10).all()
+    
+    return render_template('mobile_transfer.html', 
+                         students=students, 
+                         transactions=transactions)
+
+
+@app.route('/mobile/transfer', methods=['POST'])
+@login_required
+def mobile_transfer():
+    """Quick transfer from mobile interface"""
+    if current_user.role not in ['teacher', 'tutor', 'hod']:
+        return "Denied", 403
+    
+    receiver_id = request.form.get('receiver_id')
+    amount = int(request.form.get('amount'))
+    reason = request.form.get('reason', 'Mobile transfer')
+    
+    if current_user.balance < amount:
+        flash("Insufficient balance!", "error")
+        return redirect(url_for('mobile_dashboard'))
+    
+    receiver = User.query.filter_by(id=receiver_id, role='student').first()
+    if not receiver:
+        flash("Student not found", "error")
+        return redirect(url_for('mobile_dashboard'))
+    
+    # Verify permission
+    can_send = False
+    if current_user.tutor_of_class:
+        for cls in current_user.tutor_of_class:
+            if receiver.class_id == cls.id:
+                can_send = True
+                break
+    elif current_user.branch_id and receiver.branch_id == current_user.branch_id:
+        can_send = True
+    
+    if not can_send:
+        flash("Cannot send to this student", "error")
+        return redirect(url_for('mobile_dashboard'))
+    
+    # Perform transfer
+    current_user.balance -= amount
+    receiver.balance += amount
+    
+    tx = Transaction(
+        sender_id=current_user.id,
+        receiver_id=receiver.id,
+        amount=amount,
+        reason=reason
+    )
+    
+    db.session.add(tx)
+    db.session.commit()
+    
+    flash(f"Sent {amount} coins to {receiver.name}!", "success")
+    return redirect(url_for('mobile_dashboard'))
+
 
 
 # --- MAIN ---

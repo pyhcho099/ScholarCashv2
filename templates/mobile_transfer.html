@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ScholarCash Pay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .balance-card {
+            background: white;
+            margin: -30px 15px 20px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .balance-label {
+            color: #6b7280;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .balance-amount {
+            font-size: 3em;
+            font-weight: 800;
+            color: #166534;
+            margin: 10px 0;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+        
+        .action-btn {
+            background: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+            color: #374151;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .action-btn .icon {
+            font-size: 2em;
+        }
+        
+        .action-btn.send { color: #166534; }
+        .action-btn.scan { color: #2563eb; }
+        .action-btn.history { color: #7c3aed; }
+        .action-btn.logout { color: #dc2626; }
+        
+        .transfer-section {
+            background: white;
+            margin: 0 15px 20px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: none;
+        }
+        
+        .transfer-section.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .amount-quick {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .amount-btn {
+            background: #f3f4f6;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+        }
+        
+        .amount-btn:active {
+            background: #e5e7eb;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .recent-transfers {
+            background: white;
+            margin: 0 15px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            flex: 1;
+        }
+        
+        .recent-transfers h3 {
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        
+        .transaction-icon.sent {
+            background: #fee2e2;
+        }
+        
+        .transaction-icon.received {
+            background: #dcfce7;
+        }
+        
+        .transaction-details h4 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 0.95em;
+        }
+        
+        .transaction-details p {
+            margin: 2px 0 0;
+            color: #6b7280;
+            font-size: 0.8em;
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        
+        .transaction-amount.sent {
+            color: #dc2626;
+        }
+        
+        .transaction-amount.received {
+            color: #166534;
+        }
+        
+        .scanner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: black;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .scanner-overlay.active {
+            display: block;
+        }
+        
+        #reader {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .close-scanner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .flash-messages {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            right: 15px;
+            z-index: 200;
+        }
+        
+        .flash {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .flash.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .flash.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+        
+        .pin-btn {
+            aspect-ratio: 1;
+            font-size: 1.5em;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        
+        .pin-btn:active {
+            background: #e5e7eb;
+        }
+        
+        .pin-display {
+            text-align: center;
+            font-size: 2em;
+            letter-spacing: 8px;
+            margin: 20px 0;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Header -->
+    <div class="header">
+        <h1>💸 ScholarCash Pay</h1>
+        <p>Quick Money Transfer</p>
+    </div>
+    
+    <!-- Balance -->
+    <div class="balance-card">
+        <div class="balance-label">Your Balance</div>
+        <div class="balance-amount">{{ current_user.balance }}</div>
+        <div style="color: #6b7280; font-size: 0.9em;">coins available</div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="action-btn send" onclick="showTransfer()">
+            <span class="icon">💸</span>
+            <span>Send Money</span>
+        </button>
+        <button class="action-btn scan" onclick="startScanner()">
+            <span class="icon">📷</span>
+            <span>Scan QR</span>
+        </button>
+        <button class="action-btn history" onclick="toggleHistory()">
+            <span class="icon">📋</span>
+            <span>History</span>
+        </button>
+        <a href="/logout" class="action-btn logout" style="text-decoration: none;">
+            <span class="icon">🚪</span>
+            <span>Logout</span>
+        </a>
+    </div>
+    
+    <!-- Transfer Form -->
+    <div class="transfer-section" id="transferSection">
+        <h3 style="margin-bottom: 15px;">Send Coins</h3>
+        
+        <form action="/mobile/transfer" method="POST" id="transferForm">
+            <div class="input-group">
+                <label>To:</label>
+                <select name="receiver_id" required>
+                    <option value="">Select recipient...</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }} ({{ student.assigned_class.name }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>Amount:</label>
+                <input type="number" name="amount" id="amountInput" placeholder="0" required min="1" max="{{ current_user.balance }}">
+            </div>
+            
+            <div class="amount-quick">
+                <button type="button" class="amount-btn" onclick="setAmount(10)">10</button>
+                <button type="button" class="amount-btn" onclick="setAmount(20)">20</button>
+                <button type="button" class="amount-btn" onclick="setAmount(50)">50</button>
+                <button type="button" class="amount-btn" onclick="setAmount(100)">100</button>
+            </div>
+            
+            <div class="input-group">
+                <label>Note (optional):</label>
+                <input type="text" name="reason" placeholder="Lunch, Books, etc.">
+            </div>
+            
+            <button type="submit" class="submit-btn">Send Now</button>
+        </form>
+    </div>
+    
+    <!-- Recent Transactions -->
+    <div class="recent-transfers" id="historySection">
+        <h3>Recent</h3>
+        
+        {% if transactions %}
+            {% for tx in transactions[:5] %}
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <div class="transaction-icon {{ 'sent' if tx.sender_id == current_user.id else 'received' }}">
+                        {{ '⬆️' if tx.sender_id == current_user.id else '⬇️' }}
+                    </div>
+                    <div class="transaction-details">
+                        <h4>{{ tx.receiver.name if tx.sender_id == current_user.id else tx.sender.name }}</h4>
+                        <p>{{ tx.reason or 'Transfer' }} • {{ tx.timestamp.strftime('%H:%M') }}</p>
+                    </div>
+                </div>
+                <div class="transaction-amount {{ 'sent' if tx.sender_id == current_user.id else 'received' }}">
+                    {{ '-' if tx.sender_id == current_user.id else '+' }}{{ tx.amount }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No transactions yet</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- QR Scanner Overlay -->
+    <div class="scanner-overlay" id="scannerOverlay">
+        <button class="close-scanner" onclick="stopScanner()">✕</button>
+        <div id="reader"></div>
+    </div>
+    
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script>
+        let html5QrCode;
+        
+        function showTransfer() {
+            document.getElementById('transferSection').classList.toggle('active');
+        }
+        
+        function setAmount(amt) {
+            document.getElementById('amountInput').value = amt;
+        }
+        
+        function toggleHistory() {
+            const section = document.getElementById('historySection');
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function startScanner() {
+            document.getElementById('scannerOverlay').classList.add('active');
+            
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                onScanSuccess,
+                onScanFailure
+            );
+        }
+        
+        function stopScanner() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('scannerOverlay').classList.remove('active');
+                });
+            }
+        }
+        
+        function onScanSuccess(decodedText, decodedResult) {
+            // Parse QR code (format: "USER-{id}")
+            const match = decodedText.match(/USER-(\d+)/);
+            if (match) {
+                const userId = match[1];
+                // Fill in the transfer form
+                document.querySelector('select[name="receiver_id"]').value = userId;
+                stopScanner();
+                showTransfer();
+                alert('QR Code scanned! Recipient selected.');
+            }
+        }
+        
+        function onScanFailure(error) {
+            // console.warn(`Code scan error = ${error}`);
+        }
+        
+        // Hide flash messages after 3 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.flash').forEach(el => el.remove());
+        }, 3000);
+    </script>
+</body>
+</html>

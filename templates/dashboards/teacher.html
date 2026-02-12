@@ -191,20 +191,22 @@
         </div>
 
         <!-- Add Student Form -->
-        <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-            <h4 style="margin: 0 0 15px; color: #1e40af;">➕ Add New Student</h4>
-            <form action="/tutor/add_student" method="POST">
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <input type="text" name="name" placeholder="Student Full Name" required 
-                        style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
-                    <input type="email" name="email" placeholder="student@email.com" required 
-                        style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
-                    <button type="submit" style="background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                        Add Student
-                    </button>
-                </div>
-            </form>
+<div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h4 style="margin: 0 0 15px; color: #1e40af;">➕ Add New Student</h4>
+    <form action="/tutor/add_student" method="POST">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" name="name" placeholder="Student Full Name" required 
+                style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
+            <input type="email" name="email" placeholder="student@email.com" required 
+                style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
+            <input type="text" name="password" placeholder="Set Password" required 
+                style="flex: 1; min-width: 120px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
+            <button type="submit" style="background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                Add Student
+            </button>
         </div>
+    </form>
+</div>
 
         <!-- Class Students Table -->
         <h4 style="margin: 0 0 15px; color: #1f2937;">Class Students ({{ class_students|length }})</h4>
@@ -231,9 +233,9 @@
                             </span>
                         </td>
                         <td style="padding: 12px; text-align: center;">
-                            <a href="/edit/user/{{ student.id }}" style="color: #2563eb; text-decoration: none; margin-right: 15px; font-weight: 500;">Edit</a>
-                            <a href="/delete/user/{{ student.id }}" style="color: #dc2626; text-decoration: none; font-weight: 500;" onclick="return confirm('Remove {{ student.name }}?');">Remove</a>
-                        </td>
+    <a href="/edit/user/{{ student.id }}" style="color: #2563eb; text-decoration: none; margin-right: 15px; font-weight: 500;">Edit</a>
+    <a href="/delete/user/{{ student.id }}" style="color: #dc2626; text-decoration: none; font-weight: 500;" onclick="return confirm('Remove {{ student.name }}?');">Remove</a>
+</td>
                     </tr>
                     {% endfor %}
                 </tbody>
