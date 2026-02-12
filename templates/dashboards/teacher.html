@@ -1,92 +1,340 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+<style>
+    .tch-page { max-width: 1200px; margin: 0 auto; }
+
+    .tch-header { margin-bottom: 24px; }
+    .tch-header h1 { margin: 0 0 10px; }
+
+    .tch-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tch-badge {
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 0.78em;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .tch-badge.hod { background: var(--color-accent-purple); color: white; }
+    .tch-badge.tutor { background: var(--color-accent-blue); color: white; }
+    .tch-badge.subject { background: var(--color-primary); color: white; }
+    .tch-badge.branch { background: var(--color-surface-sunken); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+
+    /* Budget Card */
+    .tch-budget {
+        background: var(--color-primary-50);
+        padding: 28px;
+        border-radius: var(--radius-xl);
+        margin-bottom: 24px;
+        text-align: center;
+        border: 1.5px solid var(--color-primary-200);
+        position: relative;
+        overflow: hidden;
+    }
+    .tch-budget::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -10%;
+        width: 160px;
+        height: 160px;
+        background: var(--color-primary-100);
+        border-radius: 50%;
+        opacity: 0.5;
+    }
+    .tch-budget h2 { color: var(--color-primary-dark); font-size: 0.95em; margin: 0 0 8px; font-weight: 600; position: relative; }
+    .tch-budget .amount { color: var(--color-primary); font-size: 3em; font-weight: 800; margin: 0; letter-spacing: -0.03em; line-height: 1.1; position: relative; }
+    .tch-budget .sublabel { color: var(--color-primary-dark); font-size: 0.85em; margin: 6px 0 0; position: relative; opacity: 0.8; }
+
+    .tch-low-balance {
+        background: var(--color-danger-bg);
+        color: var(--color-danger);
+        padding: 10px 16px;
+        border-radius: var(--radius-md);
+        margin-top: 16px;
+        font-weight: 600;
+        font-size: 0.85em;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    /* HOD Section */
+    .tch-hod-panel {
+        background: var(--color-surface);
+        padding: 28px;
+        border-radius: var(--radius-xl);
+        margin-bottom: 24px;
+        border: 1.5px solid #ddd6fe;
+    }
+    .tch-hod-panel h3 {
+        margin: 0 0 20px;
+        color: var(--color-accent-purple);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .tch-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+    .tch-stat-card {
+        background: var(--color-surface-sunken);
+        padding: 16px;
+        border-radius: var(--radius-md);
+        text-align: center;
+        border: 1px solid var(--color-border);
+    }
+    .tch-stat-card p:first-child { margin: 0; color: var(--color-text-muted); font-size: 0.8em; font-weight: 500; }
+    .tch-stat-card p:last-child { margin: 6px 0 0; font-size: 1.7em; font-weight: 800; color: var(--color-accent-purple); }
+
+    .tch-allocate-form {
+        background: var(--color-surface-sunken);
+        padding: 20px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+    }
+    .tch-allocate-form h4 { margin: 0 0 14px; color: var(--color-text); font-size: 0.95em; display: flex; align-items: center; gap: 8px; }
+    .tch-allocate-form form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+    .tch-allocate-form .field { flex: 2; min-width: 180px; }
+    .tch-allocate-form .field-sm { flex: 1; min-width: 100px; }
+    .tch-allocate-form label { font-size: 0.8em; margin-bottom: 4px; }
+    .tch-allocate-form input, .tch-allocate-form select { margin: 0; padding: 10px 12px; }
+    .tch-allocate-form button {
+        background: var(--color-accent-purple);
+        padding: 10px 20px;
+        border-radius: var(--radius-md);
+        width: auto;
+        white-space: nowrap;
+    }
+    .tch-allocate-form button:hover { background: #6d28d9; }
+
+    /* Main Grid */
+    .tch-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .tch-card {
+        background: var(--color-surface);
+        padding: 24px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--color-border);
+    }
+    .tch-card h3 {
+        margin: 0 0 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .tch-card h3 .icon-circle {
+        width: 34px;
+        height: 34px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .tch-scope-item {
+        padding: 14px 16px;
+        border-radius: var(--radius-md);
+        border-left: 4px solid;
+        margin-bottom: 10px;
+    }
+    .tch-scope-item p:first-child { margin: 0; color: var(--color-text-muted); font-size: 0.8em; }
+    .tch-scope-item p:nth-child(2) { margin: 4px 0 0; font-weight: 700; font-size: 0.95em; }
+    .tch-scope-item p:last-child { margin: 4px 0 0; font-size: 0.8em; color: var(--color-text-muted); }
+
+    /* Tutor Section */
+    .tch-tutor-panel {
+        background: var(--color-surface);
+        padding: 28px;
+        border-radius: var(--radius-lg);
+        margin-bottom: 24px;
+        border: 1.5px solid #bfdbfe;
+        box-shadow: var(--shadow-sm);
+    }
+    .tch-tutor-panel .panel-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+    .tch-tutor-panel .panel-head .icon-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--color-accent-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .tch-tutor-panel h3 { margin: 0; }
+    .tch-tutor-panel .panel-head p { margin: 4px 0 0; color: var(--color-text-muted); font-size: 0.85em; }
+
+    .tch-add-student-form {
+        background: #eff6ff;
+        padding: 20px;
+        border-radius: var(--radius-md);
+        margin-bottom: 20px;
+        border: 1px solid #bfdbfe;
+    }
+    .tch-add-student-form h4 { margin: 0 0 14px; color: #1e40af; font-size: 0.95em; display: flex; align-items: center; gap: 8px; }
+    .tch-add-student-form form { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tch-add-student-form input { flex: 2; min-width: 140px; padding: 10px 12px; margin: 0; border: 1.5px solid #bfdbfe; }
+    .tch-add-student-form input:focus { border-color: var(--color-accent-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .tch-add-student-form button { background: var(--color-accent-blue); width: auto; padding: 10px 20px; white-space: nowrap; }
+    .tch-add-student-form button:hover { background: #1d4ed8; }
+
+    .tch-student-balance {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    .tch-action-link {
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9em;
+        transition: opacity var(--transition-fast);
+    }
+    .tch-action-link:hover { opacity: 0.7; }
+
+    /* Transaction card */
+    .tch-tx-panel {
+        background: var(--color-surface);
+        padding: 24px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--color-border);
+    }
+    .tch-tx-panel h3 {
+        margin: 0 0 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .tch-grid { grid-template-columns: 1fr; }
+        .tch-allocate-form form { flex-direction: column; }
+        .tch-add-student-form form { flex-direction: column; }
+        .tch-add-student-form input { min-width: 100%; }
+    }
+</style>
+
+<div class="tch-page">
 
     <!-- Header with Role Badges -->
-    <div style="margin-bottom: 25px;">
-        <h1 style="margin: 0; color: #1f2937; font-size: 1.8em;">Teacher Dashboard</h1>
-        <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+    <div class="tch-header">
+        <h1>Teacher Dashboard</h1>
+        <div class="tch-badges">
             {% if is_hod %}
-            <span style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">👑 HOD</span>
+            <span class="tch-badge hod">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+                HOD
+            </span>
             {% endif %}
             {% if is_tutor %}
-            <span style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">🎓 Class Tutor</span>
+            <span class="tch-badge tutor">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                Class Tutor
+            </span>
             {% endif %}
             {% if is_subject_teacher %}
-            <span style="background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">📚 Subject Teacher</span>
+            <span class="tch-badge subject">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Subject Teacher
+            </span>
             {% endif %}
             {% if my_branch %}
-            <span style="background: #f3f4f6; color: #374151; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600;">🏛️ {{ my_branch.name }}</span>
+            <span class="tch-badge branch">{{ my_branch.name }}</span>
             {% endif %}
         </div>
     </div>
 
     <!-- Budget Card -->
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 25px; border-radius: 12px; margin-bottom: 25px; text-align: center; border: 2px solid #166534; position: relative;">
-        <div style="position: absolute; top: 15px; right: 20px; font-size: 3em; opacity: 0.2;">💰</div>
-        <h2 style="margin: 0 0 10px; color: #166534; font-size: 1.1em;">My Budget</h2>
-        <h1 style="color: #166534; font-size: 3em; margin: 0; font-weight: 800;">{{ current_user.balance }}</h1>
-        <p style="color: #166534; margin: 10px 0 0;">coins available</p>
-        
+    <div class="tch-budget">
+        <h2>My Budget</h2>
+        <p class="amount">{{ current_user.balance }}</p>
+        <p class="sublabel">coins available</p>
+
         {% if current_user.balance < 50 %}
-        <div style="background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin-top: 15px; font-weight: 600;">
-            ⚠️ Low Balance! Contact Principal for more funds
+        <div class="tch-low-balance">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Low Balance! Contact Principal for more funds
         </div>
         {% endif %}
     </div>
 
     <!-- HOD Dashboard Section -->
     {% if is_hod %}
-    <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #a855f7;">
-        <h3 style="margin: 0 0 20px; color: #7c3aed; display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 1.3em;">👑</span> HOD Control Panel
+    <div class="tch-hod-panel">
+        <h3>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-purple)" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+            HOD Control Panel
         </h3>
-        
+
         <!-- Branch Stats -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
-            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Students</p>
-                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.students }}</p>
+        <div class="tch-stat-grid">
+            <div class="tch-stat-card">
+                <p>Students</p>
+                <p>{{ branch_stats.students }}</p>
             </div>
-            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Teachers</p>
-                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.teachers }}</p>
+            <div class="tch-stat-card">
+                <p>Teachers</p>
+                <p>{{ branch_stats.teachers }}</p>
             </div>
-            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Classes</p>
-                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.classes }}</p>
+            <div class="tch-stat-card">
+                <p>Classes</p>
+                <p>{{ branch_stats.classes }}</p>
             </div>
-            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Total Coins</p>
-                <p style="margin: 5px 0 0; font-size: 1.8em; font-weight: 700; color: #7c3aed;">{{ branch_stats.balance }}</p>
+            <div class="tch-stat-card">
+                <p>Total Coins</p>
+                <p>{{ branch_stats.balance }}</p>
             </div>
         </div>
 
         <!-- Allocate to Teachers -->
         {% if branch_staff %}
-        <div style="background: white; padding: 20px; border-radius: 8px;">
-            <h4 style="margin: 0 0 15px; color: #374151;">💸 Allocate Coins to Branch Teachers</h4>
-            <form action="/hod/allocate" method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
-                <div style="flex: 2; min-width: 200px;">
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #4b5563;">Select Teacher</label>
-                    <select name="teacher_id" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px;">
+        <div class="tch-allocate-form">
+            <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-purple)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Allocate Coins to Branch Teachers
+            </h4>
+            <form action="/hod/allocate" method="POST">
+                <div class="field">
+                    <label>Select Teacher</label>
+                    <select name="teacher_id" required>
                         <option value="">-- Choose Teacher --</option>
                         {% for staff in branch_staff %}
                         <option value="{{ staff.id }}">{{ staff.name }} ({{ staff.role|upper }}) - Balance: {{ staff.balance }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div style="flex: 1; min-width: 100px;">
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #4b5563;">Amount</label>
-                    <input type="number" name="amount" required min="1" max="{{ current_user.balance }}" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px;">
+                <div class="field-sm">
+                    <label>Amount</label>
+                    <input type="number" name="amount" required min="1" max="{{ current_user.balance }}">
                 </div>
-                <div style="flex: 2; min-width: 150px;">
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #4b5563;">Reason</label>
-                    <input type="text" name="reason" placeholder="Monthly budget" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px;">
+                <div class="field">
+                    <label>Reason</label>
+                    <input type="text" name="reason" placeholder="Monthly budget" required>
                 </div>
-                <button type="submit" style="background: #7c3aed; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                    Allocate
-                </button>
+                <button type="submit">Allocate</button>
             </form>
         </div>
         {% endif %}
@@ -94,22 +342,24 @@
     {% endif %}
 
     <!-- Main Actions Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin-bottom: 25px;">
-        
+    <div class="tch-grid">
+
         <!-- Send Coins Card -->
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); border: 1px solid #e5e7eb;">
-            <h3 style="margin: 0 0 20px; color: #1f2937; display: flex; align-items: center; gap: 10px;">
-                <span style="background: #166534; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9em;">📲</span>
+        <div class="tch-card">
+            <h3>
+                <span class="icon-circle" style="background: var(--color-primary-100);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </span>
                 Send Coins to Students
             </h3>
-            
+
             {% set all_students = branch_students if is_subject_teacher or is_hod else class_students %}
-            
+
             {% if all_students %}
             <form action="/teacher/transfer" method="POST">
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 6px; color: #374151; font-weight: 600; font-size: 0.9em;">Select Student</label>
-                    <select name="receiver_id" required style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.95em;">
+                <div style="margin-bottom: 14px;">
+                    <label>Select Student</label>
+                    <select name="receiver_id" required style="margin: 0; padding: 10px 12px;">
                         <option value="">-- Choose Student --</option>
                         {% for student in all_students %}
                         <option value="{{ student.id }}">
@@ -118,59 +368,59 @@
                         {% endfor %}
                     </select>
                 </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 15px;">
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 14px;">
                     <div>
-                        <label style="display: block; margin-bottom: 6px; color: #374151; font-weight: 600; font-size: 0.9em;">Amount</label>
-                        <input type="number" name="amount" placeholder="10" required min="1" max="{{ current_user.balance }}" 
-                            style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                        <label>Amount</label>
+                        <input type="number" name="amount" placeholder="10" required min="1" max="{{ current_user.balance }}"
+                            style="margin: 0; padding: 10px 12px;">
                     </div>
                     <div>
-                        <label style="display: block; margin-bottom: 6px; color: #374151; font-weight: 600; font-size: 0.9em;">Reason</label>
-                        <input type="text" name="reason" placeholder="Good behavior, Homework..." required 
-                            style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                        <label>Reason</label>
+                        <input type="text" name="reason" placeholder="Good behavior, Homework..." required
+                            style="margin: 0; padding: 10px 12px;">
                     </div>
                 </div>
-                
-                <button type="submit" style="width: 100%; padding: 12px; background: #166534; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                    Send Coins →
+
+                <button type="submit" style="background: var(--color-primary);">
+                    Send Coins
                 </button>
             </form>
             {% else %}
-            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; text-align: center; color: #6b7280;">
-                <p>No students available in your scope</p>
+            <div style="background: var(--color-surface-sunken); padding: 24px; border-radius: var(--radius-md); text-align: center; color: var(--color-text-muted);">
+                <p style="margin: 0;">No students available in your scope</p>
             </div>
             {% endif %}
         </div>
 
         <!-- Quick Info Card -->
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); border: 1px solid #e5e7eb;">
-            <h3 style="margin: 0 0 20px; color: #1f2937;">My Scope</h3>
-            
-            <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="tch-card">
+            <h3>My Scope</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
                 {% if is_hod %}
-                <div style="background: #faf5ff; padding: 15px; border-radius: 8px; border-left: 4px solid #a855f7;">
-                    <p style="margin: 0; color: #6b7280; font-size: 0.85em;">HOD Of</p>
-                    <p style="margin: 5px 0 0; font-weight: 700; color: #7c3aed;">{{ my_branch.name }} Branch</p>
-                    <p style="margin: 5px 0 0; font-size: 0.85em; color: #6b7280;">Manages all teachers & students</p>
+                <div class="tch-scope-item" style="background: #faf5ff; border-color: var(--color-accent-purple);">
+                    <p>HOD Of</p>
+                    <p style="color: var(--color-accent-purple);">{{ my_branch.name }} Branch</p>
+                    <p>Manages all teachers & students</p>
                 </div>
                 {% endif %}
-                
+
                 {% if is_tutor %}
-                <div style="background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-                    <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Tutor Of</p>
+                <div class="tch-scope-item" style="background: #eff6ff; border-color: var(--color-accent-blue);">
+                    <p>Tutor Of</p>
                     {% for cls in current_user.tutor_of_class %}
-                    <p style="margin: 5px 0 0; font-weight: 700; color: #2563eb;">{{ cls.name }}</p>
+                    <p style="color: var(--color-accent-blue);">{{ cls.name }}</p>
                     {% endfor %}
-                    <p style="margin: 5px 0 0; font-size: 0.85em; color: #6b7280;">Can add/manage class students</p>
+                    <p>Can add/manage class students</p>
                 </div>
                 {% endif %}
-                
+
                 {% if is_subject_teacher and not is_hod %}
-                <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #22c55e;">
-                    <p style="margin: 0; color: #6b7280; font-size: 0.85em;">Teaching In</p>
-                    <p style="margin: 5px 0 0; font-weight: 700; color: #15803d;">{{ my_branch.name }} Branch</p>
-                    <p style="margin: 5px 0 0; font-size: 0.85em; color: #6b7280;">Can reward any branch student</p>
+                <div class="tch-scope-item" style="background: var(--color-primary-50); border-color: var(--color-primary);">
+                    <p>Teaching In</p>
+                    <p style="color: var(--color-primary);">{{ my_branch.name }} Branch</p>
+                    <p>Can reward any branch student</p>
                 </div>
                 {% endif %}
             </div>
@@ -179,112 +429,111 @@
 
     <!-- Tutor Class Management -->
     {% if is_tutor %}
-    <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #3b82f6; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-            <span style="background: #2563eb; color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em;">🎓</span>
+    <div class="tch-tutor-panel">
+        <div class="panel-head">
+            <span class="icon-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </span>
             <div>
-                <h3 style="margin: 0; color: #1f2937;">Class Tutor Management</h3>
-                <p style="margin: 5px 0 0; color: #6b7280; font-size: 0.9em;">
-                    Managing: {% for cls in current_user.tutor_of_class %}{{ cls.name }}{% if not loop.last %}, {% endif %}{% endfor %}
-                </p>
+                <h3>Class Tutor Management</h3>
+                <p>Managing: {% for cls in current_user.tutor_of_class %}{{ cls.name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
             </div>
         </div>
 
         <!-- Add Student Form -->
-<div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-    <h4 style="margin: 0 0 15px; color: #1e40af;">➕ Add New Student</h4>
-    <form action="/tutor/add_student" method="POST">
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" name="name" placeholder="Student Full Name" required 
-                style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
-            <input type="email" name="email" placeholder="student@email.com" required 
-                style="flex: 2; min-width: 150px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
-            <input type="text" name="password" placeholder="Set Password" required 
-                style="flex: 1; min-width: 120px; padding: 10px; border: 2px solid #bfdbfe; border-radius: 6px;">
-            <button type="submit" style="background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                Add Student
-            </button>
+        <div class="tch-add-student-form">
+            <h4>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add New Student
+            </h4>
+            <form action="/tutor/add_student" method="POST">
+                <input type="text" name="name" placeholder="Student Full Name" required style="flex: 2; min-width: 150px;">
+                <input type="email" name="email" placeholder="student@email.com" required style="flex: 2; min-width: 150px;">
+                <input type="text" name="password" placeholder="Set Password" required style="flex: 1; min-width: 120px;">
+                <button type="submit">Add Student</button>
+            </form>
         </div>
-    </form>
-</div>
 
         <!-- Class Students Table -->
-        <h4 style="margin: 0 0 15px; color: #1f2937;">Class Students ({{ class_students|length }})</h4>
-        
+        <h4 style="margin: 0 0 14px;">Class Students ({{ class_students|length }})</h4>
+
         {% if class_students %}
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+        <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+            <table>
                 <thead>
-                    <tr style="background: #f8fafc;">
-                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Name</th>
-                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Email</th>
-                        <th style="padding: 12px; text-align: center; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Balance</th>
-                        <th style="padding: 12px; text-align: center; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Actions</th>
+                    <tr>
+                        <th style="padding: 12px 16px;">Name</th>
+                        <th style="padding: 12px 16px;">Email</th>
+                        <th style="padding: 12px 16px; text-align: center;">Balance</th>
+                        <th style="padding: 12px 16px; text-align: center;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for student in class_students %}
-                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                        <td style="padding: 12px; font-weight: 500; color: #1e293b;">{{ student.name }}</td>
-                        <td style="padding: 12px; color: #64748b; font-size: 0.9em;">{{ student.email }}</td>
-                        <td style="padding: 12px; text-align: center;">
-                            <span style="background: {{ 'dcfce7' if student.balance > 0 else 'fee2e2' }}; color: {{ '166534' if student.balance > 0 else '991b1b' }}; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 0.9em;">
-                                {{ student.balance }} 💰
+                    <tr>
+                        <td style="font-weight: 500; color: var(--color-text);">{{ student.name }}</td>
+                        <td style="font-size: 0.88em;">{{ student.email }}</td>
+                        <td style="text-align: center;">
+                            <span class="tch-student-balance" style="background: {{ 'var(--color-success-bg)' if student.balance > 0 else 'var(--color-danger-bg)' }}; color: {{ 'var(--color-success)' if student.balance > 0 else 'var(--color-danger)' }};">
+                                {{ student.balance }}
                             </span>
                         </td>
-                        <td style="padding: 12px; text-align: center;">
-    <a href="/edit/user/{{ student.id }}" style="color: #2563eb; text-decoration: none; margin-right: 15px; font-weight: 500;">Edit</a>
-    <a href="/delete/user/{{ student.id }}" style="color: #dc2626; text-decoration: none; font-weight: 500;" onclick="return confirm('Remove {{ student.name }}?');">Remove</a>
-</td>
+                        <td style="text-align: center;">
+                            <a href="/edit/user/{{ student.id }}" class="tch-action-link" style="color: var(--color-accent-blue); margin-right: 14px;">Edit</a>
+                            <a href="/delete/user/{{ student.id }}" class="tch-action-link" style="color: var(--color-danger);" onclick="return confirm('Remove {{ student.name }}?');">Remove</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         {% else %}
-        <div style="text-align: center; padding: 40px; color: #6b7280; background: #f8fafc; border-radius: 8px;">
-            <p>No students in your class yet. Add students above.</p>
+        <div style="text-align: center; padding: 36px; color: var(--color-text-muted); background: var(--color-surface-sunken); border-radius: var(--radius-md);">
+            <p style="margin: 0;">No students in your class yet. Add students above.</p>
         </div>
         {% endif %}
     </div>
     {% endif %}
 
     <!-- Transaction History -->
-    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); border: 1px solid #e5e7eb;">
-        <h3 style="margin: 0 0 20px; color: #1f2937;">📜 Recent Transactions</h3>
-        
+    <div class="tch-tx-panel">
+        <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Recent Transactions
+        </h3>
+
         {% if transactions %}
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+        <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+            <table>
                 <thead>
-                    <tr style="background: #f8fafc;">
-                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Date</th>
-                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Recipient</th>
-                        <th style="padding: 12px; text-align: center; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Amount</th>
-                        <th style="padding: 12px; text-align: left; color: #475569; font-weight: 600; border-bottom: 2px solid #e2e8f0;">Reason</th>
+                    <tr>
+                        <th style="padding: 12px 16px;">Date</th>
+                        <th style="padding: 12px 16px;">Recipient</th>
+                        <th style="padding: 12px 16px; text-align: center;">Amount</th>
+                        <th style="padding: 12px 16px;">Reason</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for tx in transactions %}
-                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                        <td style="padding: 12px; color: #64748b; font-size: 0.9em; white-space: nowrap;">
+                    <tr>
+                        <td style="white-space: nowrap; font-size: 0.88em;">
                             {{ tx.timestamp.strftime('%d %b %Y, %H:%M') }}
                         </td>
-                        <td style="padding: 12px; color: #1e293b; font-weight: 500;">
+                        <td style="font-weight: 500; color: var(--color-text);">
                             {{ tx.receiver.name if tx.receiver else 'Unknown' }}
                         </td>
-                        <td style="padding: 12px; text-align: center;">
-                            <span style="color: #dc2626; font-weight: 700;">-{{ tx.amount }}</span>
+                        <td style="text-align: center;">
+                            <span style="color: var(--color-danger); font-weight: 700; font-family: var(--font-mono);">-{{ tx.amount }}</span>
                         </td>
-                        <td style="padding: 12px; color: #64748b;">{{ tx.reason }}</td>
+                        <td>{{ tx.reason }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         {% else %}
-        <div style="text-align: center; padding: 40px; color: #6b7280;">
-            <p>No transactions yet. Start rewarding students!</p>
+        <div style="text-align: center; padding: 36px; color: var(--color-text-muted);">
+            <p style="margin: 0;">No transactions yet. Start rewarding students!</p>
         </div>
         {% endif %}
     </div>

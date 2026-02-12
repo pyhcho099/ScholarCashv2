@@ -1,79 +1,71 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="min-height: 80vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px;">
-    <div style="width: 100%; max-width: 420px; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative; overflow: hidden;">
-        
-        <!-- Decorative header -->
-        <div style="position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #f093fb, #f5576c);"></div>
-        
-        <div style="text-align: center; margin-bottom: 30px;">
-            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2em;">
-                📝
+<div style="min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; background: var(--color-bg); padding: 24px;">
+    <div style="width: 100%; max-width: 400px;">
+
+        <!-- Logo mark -->
+        <div style="text-align: center; margin-bottom: 32px;">
+            <div style="width: 56px; height: 56px; background: var(--color-primary); border-radius: var(--radius-lg); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(15,118,110,0.25);">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
             </div>
-            <h2 style="margin: 0; color: #1f2937; font-size: 1.8em;">Create Account</h2>
-            <p style="color: #6b7280; margin: 10px 0 0;">Join ScholarCash as a student</p>
+            <h2 style="margin: 0 0 6px; font-size: 1.5em; font-weight: 800; color: var(--color-text); letter-spacing: -0.03em;">Create Account</h2>
+            <p style="color: var(--color-text-muted); margin: 0; font-size: 0.9em;">Join ScholarCash as a student</p>
         </div>
 
-        <form action="/register" method="POST" style="margin-bottom: 20px;">
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Full Name</label>
-                <input type="text" name="name" placeholder="John Doe" required 
-                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; transition: all 0.3s; box-sizing: border-box;"
-                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
-                    onblur="this.style.borderColor='#e5e7eb';">
+        <!-- Card -->
+        <div style="background: var(--color-surface); padding: 32px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); border: 1px solid var(--color-border);">
+            <form action="/register" method="POST">
+                <div style="margin-bottom: 18px;">
+                    <label style="margin-bottom: 6px;">Full Name</label>
+                    <input type="text" name="name" placeholder="John Doe" required 
+                        style="padding: 12px 14px; border: 1.5px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.95em; margin: 0;">
+                </div>
+
+                <div style="margin-bottom: 18px;">
+                    <label style="margin-bottom: 6px;">Email Address</label>
+                    <input type="email" name="email" placeholder="you@student.school" required 
+                        style="padding: 12px 14px; border: 1.5px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.95em; margin: 0;">
+                </div>
+
+                <div style="margin-bottom: 18px;">
+                    <label style="margin-bottom: 6px;">Password</label>
+                    <input type="password" name="password" placeholder="Create a strong password" required 
+                        style="padding: 12px 14px; border: 1.5px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.95em; margin: 0;">
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="margin-bottom: 6px;">Select Your Class</label>
+                    <select name="class_id" required 
+                        style="padding: 12px 14px; border: 1.5px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.95em; background: var(--color-surface); cursor: pointer; margin: 0;">
+                        <option value="">-- Choose your class --</option>
+                        {% for c in classes %}
+                        <option value="{{ c.id }}">{{ c.name }} ({{ c.branch.name }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" style="padding: 13px; font-size: 0.95em; border-radius: var(--radius-md);">
+                    Create Account
+                </button>
+            </form>
+
+            <div style="text-align: center; padding-top: 20px; margin-top: 20px; border-top: 1px solid var(--color-border);">
+                <p style="color: var(--color-text-muted); margin: 0; font-size: 0.875em;">
+                    Already have an account? 
+                    <a href="/login" style="color: var(--color-primary); text-decoration: none; font-weight: 600;">Sign in here</a>
+                </p>
             </div>
-
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Email Address</label>
-                <input type="email" name="email" placeholder="you@student.school" required 
-                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; transition: all 0.3s; box-sizing: border-box;"
-                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
-                    onblur="this.style.borderColor='#e5e7eb';">
-            </div>
-
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Password</label>
-                <input type="password" name="password" placeholder="Create a strong password" required 
-                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; transition: all 0.3s; box-sizing: border-box;"
-                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
-                    onblur="this.style.borderColor='#e5e7eb';">
-            </div>
-
-            <div style="margin-bottom: 25px;">
-                <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.9em;">Select Your Class</label>
-                <select name="class_id" required 
-                    style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1em; background: white; cursor: pointer; transition: all 0.3s; box-sizing: border-box;"
-                    onfocus="this.style.borderColor='#f5576c'; this.style.outline='none';"
-                    onblur="this.style.borderColor='#e5e7eb';">
-                    <option value="">-- Choose your class --</option>
-                    {% for c in classes %}
-                    <option value="{{ c.id }}">{{ c.name }} ({{ c.branch.name }})</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <button type="submit" 
-                style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
-                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(245, 87, 108, 0.3)';"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                Create Account
-            </button>
-        </form>
-
-        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; margin: 0;">
-                Already have an account? 
-                <a href="/login" style="color: #f5576c; text-decoration: none; font-weight: 600;">Sign in here</a>
-            </p>
         </div>
 
         <!-- Info note -->
-        <div style="background: #fef3f2; padding: 15px; border-radius: 8px; margin-top: 20px; font-size: 0.85em; border-left: 4px solid #f5576c;">
-            <p style="margin: 0; color: #991b1b;">
-                <strong>💡 Note:</strong> Teachers and staff must be registered by the Principal.
-            </p>
+        <div style="background: var(--color-warning-bg); padding: 14px 16px; border-radius: var(--radius-md); margin-top: 16px; font-size: 0.8em; border: 1px solid var(--color-warning-border); display: flex; align-items: flex-start; gap: 10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span style="color: var(--color-warning);">
+                <strong>Note:</strong> Teachers and staff must be registered by the Principal.
+            </span>
         </div>
+
     </div>
 </div>
 {% endblock %}

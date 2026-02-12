@@ -2,121 +2,258 @@
 
 {% block content %}
 <style>
-    /* Mobile-First CSS specific for Student Dashboard */
-    .dashboard-header {
-        background: linear-gradient(135deg, #2563eb, #1e40af);
+    .stu-header {
+        background: var(--color-primary);
         color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        padding: 28px 24px;
+        border-radius: var(--radius-xl);
+        margin-bottom: 24px;
         text-align: center;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
     }
-    .balance-huge { font-size: 3em; font-weight: bold; margin: 10px 0; }
-    
-    .grid-container {
+    .stu-header::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -15%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 50%;
+    }
+    .stu-header h3 {
+        color: rgba(255,255,255,0.85);
+        font-weight: 500;
+        font-size: 0.95em;
+        margin-bottom: 4px;
+    }
+    .stu-balance { font-size: 3.2em; font-weight: 800; margin: 6px 0 2px; letter-spacing: -0.03em; line-height: 1; }
+    .stu-label {
+        font-size: 0.75em;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0.7;
+        font-weight: 600;
+    }
+
+    .stu-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 24px;
     }
-    
-    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    
-    .qr-container { text-align: center; padding: 20px; border: 2px dashed #ccc; border-radius: 10px; margin-bottom: 20px; }
-    .qr-container img { max-width: 200px; height: auto; }
-    
-    .item-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 10px; }
-    .price-tag { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 15px; font-weight: bold; }
-    
-    .receipt-ticket { 
-        background: #fffbeb; border-left: 5px solid #d97706; padding: 10px; margin-bottom: 10px; 
-        display: flex; justify-content: space-between; align-items: center;
+
+    .stu-card {
+        background: var(--color-surface);
+        padding: 24px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--color-border);
     }
-    .code-display { font-family: monospace; font-size: 1.2em; letter-spacing: 2px; font-weight: bold; }
+
+    .stu-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 4px;
+    }
+
+    .stu-card h3 .icon-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .stu-qr {
+        text-align: center;
+        padding: 24px;
+        border: 2px dashed var(--color-border);
+        border-radius: var(--radius-lg);
+        margin: 16px 0 24px;
+        background: var(--color-surface-sunken);
+    }
+    .stu-qr img { max-width: 180px; height: auto; border-radius: var(--radius-md); }
+    .stu-qr small { display: block; margin-top: 10px; font-family: var(--font-mono); color: var(--color-text-muted); font-size: 0.8em; }
+
+    .stu-tx-item {
+        border-bottom: 1px solid var(--color-border);
+        padding: 12px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .stu-tx-item:last-child { border-bottom: none; }
+
+    .stu-tx-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.8em;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 20px;
+    }
+    .stu-tx-badge.in { background: var(--color-success-bg); color: var(--color-success); }
+    .stu-tx-badge.out { background: var(--color-danger-bg); color: var(--color-danger); }
+
+    .stu-store-item {
+        border: 1px solid var(--color-border);
+        padding: 16px;
+        border-radius: var(--radius-md);
+        text-align: center;
+        margin-bottom: 12px;
+        transition: all var(--transition-fast);
+    }
+    .stu-store-item:hover {
+        border-color: var(--color-border-hover);
+        box-shadow: var(--shadow-xs);
+    }
+    .stu-store-item h4 { margin: 0 0 8px; font-size: 0.95em; }
+
+    .stu-price {
+        background: var(--color-primary-50);
+        color: var(--color-primary);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    .stu-receipt {
+        background: var(--color-warning-bg);
+        border: 1px solid var(--color-warning-border);
+        border-left: 4px solid var(--color-accent-amber);
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+    .stu-receipt-code {
+        font-family: var(--font-mono);
+        font-size: 1.05em;
+        letter-spacing: 2px;
+        font-weight: 700;
+        color: var(--color-accent-amber);
+    }
+
+    @media (max-width: 768px) {
+        .stu-grid { grid-template-columns: 1fr; }
+        .stu-balance { font-size: 2.6em; }
+    }
 </style>
 
-<div class="dashboard-header">
-    <h3>👋 Hi, {{ current_user.name }}</h3>
-    <div class="balance-huge">{{ current_user.balance }}</div>
-    <div>SCHOLAR COINS</div>
-</div>
+<div style="max-width: 1100px; margin: 0 auto;">
 
-<div class="grid-container">
-    
-    <div class="card">
-        <h3>🆔 My ID Card</h3>
-        <p style="color: #666; font-size: 0.9em; text-align: center;">Show this to your teacher to receive coins.</p>
-        
-        <div class="qr-container">
-            <img src="/student/qr_image" alt="My QR Code">
-            <br>
-            <small>ID: USER-{{ current_user.id }}</small>
-        </div>
-
-        <h4>📜 Recent History</h4>
-        <ul style="list-style: none; padding: 0;">
-            {% for tx in transactions %}
-            <li style="border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between;">
-                <span>
-                    {% if tx.receiver_id == current_user.id %}
-                        <span style="color: green;">⬇️ Received</span>
-                    {% else %}
-                        <span style="color: red;">⬆️ Spent</span>
-                    {% endif %}
-                    <br><small style="color: #999;">{{ tx.reason }}</small>
-                </span>
-                <span style="font-weight: bold;">
-                    {% if tx.receiver_id == current_user.id %}+{% else %}-{% endif %}
-                    {{ tx.amount }}
-                </span>
-            </li>
-            {% else %}
-            <li style="color: #999; text-align: center;">No transactions yet.</li>
-            {% endfor %}
-        </ul>
+    <div class="stu-header">
+        <h3>Hi, {{ current_user.name }}</h3>
+        <div class="stu-balance">{{ current_user.balance }}</div>
+        <div class="stu-label">Scholar Coins</div>
     </div>
 
-    <div class="card">
-        <h3>🛒 Reward Store</h3>
-        <div style="max-height: 400px; overflow-y: auto;">
-            {% for item in store_items %}
-            <div class="item-card">
-                <h4>{{ item.name }}</h4>
-                <p><span class="price-tag">{{ item.cost }} Coins</span></p>
-                <p style="font-size: 0.8em; color: #666;">{{ item.stock }} left in stock</p>
-                
-                {% if current_user.balance >= item.cost %}
-                    <a href="/student/buy/{{ item.id }}" class="btn-buy" style="width: 100%; display: block;" 
-                       onclick="return confirm('Spend {{ item.cost }} coins for {{ item.name }}?');">
-                       Buy Now
-                    </a>
+    <div class="stu-grid">
+
+        <div class="stu-card">
+            <h3>
+                <span class="icon-circle" style="background: var(--color-primary-100);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </span>
+                My ID Card
+            </h3>
+            <p style="color: var(--color-text-muted); font-size: 0.85em; margin-bottom: 0;">Show this to your teacher to receive coins.</p>
+
+            <div class="stu-qr">
+                <img src="/student/qr_image" alt="My QR Code">
+                <small>ID: USER-{{ current_user.id }}</small>
+            </div>
+
+            <h4 style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Recent History
+            </h4>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for tx in transactions %}
+                <li class="stu-tx-item">
+                    <span>
+                        {% if tx.receiver_id == current_user.id %}
+                            <span class="stu-tx-badge in">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                Received
+                            </span>
+                        {% else %}
+                            <span class="stu-tx-badge out">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                                Spent
+                            </span>
+                        {% endif %}
+                        <br><small style="color: var(--color-text-muted); font-size: 0.8em;">{{ tx.reason }}</small>
+                    </span>
+                    <span style="font-weight: 700; font-family: var(--font-mono); font-size: 0.95em; color: {% if tx.receiver_id == current_user.id %}var(--color-success){% else %}var(--color-danger){% endif %};">
+                        {% if tx.receiver_id == current_user.id %}+{% else %}-{% endif %}{{ tx.amount }}
+                    </span>
+                </li>
                 {% else %}
-                    <button disabled style="background: #ccc; cursor: not-allowed; width: 100%;">Need Coins</button>
-                {% endif %}
+                <li style="color: var(--color-text-muted); text-align: center; padding: 20px 0;">No transactions yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="stu-card">
+            <h3>
+                <span class="icon-circle" style="background: var(--color-primary-100);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                </span>
+                Reward Store
+            </h3>
+            <div style="max-height: 420px; overflow-y: auto; margin-top: 16px; padding-right: 4px;">
+                {% for item in store_items %}
+                <div class="stu-store-item">
+                    <h4>{{ item.name }}</h4>
+                    <p style="margin: 0 0 6px;"><span class="stu-price">{{ item.cost }} Coins</span></p>
+                    <p style="font-size: 0.8em; color: var(--color-text-muted); margin: 0 0 12px;">{{ item.stock }} left in stock</p>
+
+                    {% if current_user.balance >= item.cost %}
+                        <a href="/student/buy/{{ item.id }}" class="btn-buy" style="width: 100%; display: block; text-align: center;"
+                           onclick="return confirm('Spend {{ item.cost }} coins for {{ item.name }}?');">
+                           Buy Now
+                        </a>
+                    {% else %}
+                        <button disabled style="width: 100%;">Need More Coins</button>
+                    {% endif %}
+                </div>
+                {% else %}
+                <p style="text-align: center; color: var(--color-text-muted); padding: 24px 0;">Store is empty.</p>
+                {% endfor %}
+            </div>
+
+            <h4 style="margin-top: 28px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                My Receipts
+            </h4>
+            <p style="font-size: 0.8em; color: var(--color-text-muted); margin-bottom: 12px;">Show this code to claim your item at the store.</p>
+
+            {% for r in receipts %}
+            <div class="stu-receipt">
+                <div>
+                    <strong style="color: var(--color-text); font-size: 0.9em;">{{ r.item.name }}</strong><br>
+                    <small style="color: var(--color-text-muted);">{{ r.timestamp.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <div style="text-align: right;">
+                    <div class="stu-receipt-code">{{ r.unique_code }}</div>
+                </div>
             </div>
             {% else %}
-            <p style="text-align: center; color: #999;">Store is empty.</p>
+            <p style="text-align: center; color: var(--color-text-muted); padding: 16px 0;">No purchases yet.</p>
             {% endfor %}
         </div>
 
-        <h3 style="margin-top: 30px;">🧾 My Receipts</h3>
-<p style="font-size: 0.8em; color: #666;">Show this code to claim your item at the store.</p>
-
-{% for r in receipts %}
-<div class="receipt-ticket">
-    <div>
-        <strong>{{ r.item.name }}</strong><br>
-        <small>{{ r.timestamp.strftime('%Y-%m-%d') }}</small>
     </div>
-    <div style="text-align: right;">
-        <div class="code-display">{{ r.unique_code }}</div>
-    </div>
-</div>
-{% else %}
-<p style="text-align: center; color: #999;">No purchases yet.</p>
-{% endfor %}
-    </div>
-
 </div>
 {% endblock %}
 {% block scripts %}
