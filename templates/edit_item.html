@@ -1,76 +1,95 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h2>Edit {{ type|title }}</h2>
-    
-    <form method="POST">
-        <label>Name:</label>
-        <input type="text" name="name" value="{{ item.name }}" required>
+<div style="max-width: 560px; margin: 0 auto;">
+    <div style="margin-bottom: 24px;">
+        <a href="{{ '/principal' if current_user.role == 'principal' else '/teacher' }}" style="display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-muted); text-decoration: none; font-size: 0.85em; font-weight: 500; transition: color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-text-muted)'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to Dashboard
+        </a>
+    </div>
 
-        {% if type == 'store' %}
-            <div style="display: flex; gap: 15px; margin-top: 15px;">
-                <div style="flex: 1;">
-                    <label>Cost (Coins):</label>
-                    <input type="number" name="cost" value="{{ item.cost }}" required>
+    <div style="background: var(--color-surface); padding: 32px; border-radius: var(--radius-xl); box-shadow: var(--shadow-md); border: 1px solid var(--color-border);">
+        <h2 style="margin: 0 0 24px; font-size: 1.3em;">Edit {{ type|title }}</h2>
+
+        <form method="POST">
+            <div style="margin-bottom: 16px;">
+                <label>Name:</label>
+                <input type="text" name="name" value="{{ item.name }}" required style="margin: 6px 0 0; padding: 11px 14px;">
+            </div>
+
+            {% if type == 'store' %}
+                <div style="display: flex; gap: 14px; margin-bottom: 8px;">
+                    <div style="flex: 1;">
+                        <label>Cost (Coins):</label>
+                        <input type="number" name="cost" value="{{ item.cost }}" required style="margin: 6px 0 0; padding: 11px 14px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Stock Quantity:</label>
+                        <input type="number" name="stock" value="{{ item.stock }}" required style="margin: 6px 0 0; padding: 11px 14px;">
+                    </div>
                 </div>
-                <div style="flex: 1;">
-                    <label>Stock Quantity:</label>
-                    <input type="number" name="stock" value="{{ item.stock }}" required>
+                <p style="font-size: 0.8em; color: var(--color-text-muted); margin: 0 0 16px;">
+                    Tip: Set stock to 0 to hide item from students without deleting it.
+                </p>
+            {% endif %}
+
+            {% if type == 'user' %}
+                <div style="margin-bottom: 16px;">
+                    <label>Email:</label>
+                    <input type="email" name="email" value="{{ item.email }}" required style="margin: 6px 0 0; padding: 11px 14px;">
                 </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label>New Password <span style="color: var(--color-text-muted); font-weight: 400;">(leave blank to keep current)</span></label>
+                    <input type="text" name="password" placeholder="Enter new password or leave blank" style="margin: 6px 0 0; padding: 11px 14px;">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label>Role:</label>
+                    <select name="role" id="roleSelect" onchange="toggleFields()" style="margin: 6px 0 0; padding: 11px 14px;">
+                        <option value="student" {% if item.role == 'student' %}selected{% endif %}>Student</option>
+                        <option value="teacher" {% if item.role == 'teacher' %}selected{% endif %}>Subject Teacher</option>
+                        <option value="tutor" {% if item.role == 'tutor' %}selected{% endif %}>Class Tutor</option>
+                        <option value="hod" {% if item.role == 'hod' %}selected{% endif %}>HOD</option>
+                    </select>
+                </div>
+
+                <!-- Branch Selection (for Teachers, HODs) -->
+                <div id="branchField" style="display: none; margin-bottom: 16px;">
+                    <label style="color: var(--color-accent-blue);">Assign to Branch:</label>
+                    <select name="branch_id" style="margin: 6px 0 0; padding: 11px 14px;">
+                        <option value="">-- No Branch --</option>
+                        {% for b in branches %}
+                        <option value="{{ b.id }}" {% if item.branch_id == b.id %}selected{% endif %}>
+                            {{ b.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Class Selection (for Students and Tutors) -->
+                <div id="classField" style="display: none; margin-bottom: 16px;">
+                    <label style="color: var(--color-primary);" id="classLabel">Assign to Class:</label>
+                    <select name="class_id" style="margin: 6px 0 0; padding: 11px 14px;">
+                        <option value="">-- No Class --</option>
+                        {% for c in classes %}
+                        <option value="{{ c.id }}" {% if item.class_id == c.id or c.tutor_id == item.id %}selected{% endif %}>
+                            {{ c.name }} ({{ c.branch.name }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" style="background: var(--color-primary); flex: 2;">Save Changes</button>
+                <a href="{{ '/principal' if current_user.role == 'principal' else '/teacher' }}"
+                   style="display: flex; align-items: center; justify-content: center; padding: 11px 18px; background: var(--color-surface-sunken); color: var(--color-text-secondary); border-radius: var(--radius-md); text-decoration: none; font-size: 0.925em; font-weight: 600; border: 1px solid var(--color-border); flex: 1; transition: all 0.15s;">
+                    Cancel
+                </a>
             </div>
-            <p style="font-size: 0.8em; color: #666;">
-                Tip: Set stock to 0 to hide item from students without deleting it.
-            </p>
-        {% endif %}
-
-        {% if type == 'user' %}
-            <label>Email:</label>
-            <input type="email" name="email" value="{{ item.email }}" required>
-            
-            <!-- NEW: Password field for all users including students -->
-            <label>New Password (leave blank to keep current):</label>
-            <input type="text" name="password" placeholder="Enter new password or leave blank">
-            
-            <label>Role:</label>
-            <select name="role" id="roleSelect" onchange="toggleFields()">
-                <option value="student" {% if item.role == 'student' %}selected{% endif %}>Student</option>
-                <option value="teacher" {% if item.role == 'teacher' %}selected{% endif %}>Subject Teacher</option>
-                <option value="tutor" {% if item.role == 'tutor' %}selected{% endif %}>Class Tutor</option>
-                <option value="hod" {% if item.role == 'hod' %}selected{% endif %}>HOD</option>
-            </select>
-
-            <!-- Branch Selection (for Teachers, HODs) -->
-            <div id="branchField" style="display: none; margin-top: 15px;">
-                <label style="color: blue;">Assign to Branch:</label>
-                <select name="branch_id">
-                    <option value="">-- No Branch --</option>
-                    {% for b in branches %}
-                    <option value="{{ b.id }}" {% if item.branch_id == b.id %}selected{% endif %}>
-                        {{ b.name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <!-- Class Selection (for Students and Tutors) -->
-            <div id="classField" style="display: none; margin-top: 15px;">
-                <label style="color: green;" id="classLabel">Assign to Class:</label>
-                <select name="class_id">
-                    <option value="">-- No Class --</option>
-                    {% for c in classes %}
-                    <option value="{{ c.id }}" {% if item.class_id == c.id or c.tutor_id == item.id %}selected{% endif %}>
-                        {{ c.name }} ({{ c.branch.name }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-        {% endif %}
-
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <button type="submit" style="background: #2563eb;">Save Changes</button>
-            <a href="{{ '/principal' if current_user.role == 'principal' else '/teacher' }}" style="padding: 10px; background: #64748b; color: white; border-radius: 4px; text-decoration: none; text-align: center; flex: 1;">Cancel</a>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 {% if type == 'user' %}
@@ -89,17 +108,17 @@
             branchDiv.style.display = 'none';
             classDiv.style.display = 'block';
             classLabel.innerText = "Assign to Class (Required):";
-        } 
+        }
         else if (role === 'tutor') {
             branchDiv.style.display = 'none';
             classDiv.style.display = 'block';
             classLabel.innerText = "Tutor for Class:";
-        } 
+        }
         else if (role === 'hod') {
             branchDiv.style.display = 'block';
             classDiv.style.display = 'block';
             classLabel.innerText = "Optional - Also Tutor for Class:";
-        } 
+        }
         else if (role === 'teacher') {
             branchDiv.style.display = 'block';
             classDiv.style.display = 'none';
