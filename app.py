@@ -16,12 +16,27 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'landing'
+DB_AVAILABLE = False
+try:
+    with app.app_context():
+        db.create_all()
+        DB_AVAILABLE = True
+except Exception:
+    DB_AVAILABLE = False
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 # --- AUTH & HOME ROUTES ---
+
+@app.before_request
+def check_db():
+    from flask import request
+    if not DB_AVAILABLE:
+        safe_routes = ['landing', 'static']
+        if request.endpoint not in safe_routes:
+            return render_template('db_offline.html'), 503
 
 @app.route('/landing')
 def landing():

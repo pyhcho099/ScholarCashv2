@@ -2,6 +2,8 @@
 
 > A school‑based virtual‑currency platform where staff reward students with coins that can be spent in an in‑app store — built with Flask & SQLite.
 
+![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python) ![Flask](https://img.shields.io/badge/Flask-3.0-black?logo=flask) ![SQLite](https://img.shields.io/badge/Database-SQLite-lightblue?logo=sqlite) ![License](https://img.shields.io/badge/License-Educational-green)
+
 ---
 
 ## 📌 Overview
@@ -35,16 +37,19 @@ Every transaction is recorded, every purchase generates a unique receipt code, a
 
 ```
 ScholarCash_v2/
-├── app.py                  # Flask routes & business logic (745 lines)
-├── models.py               # SQLAlchemy models (User, Branch, ClassRoom, Transaction, StoreItem, Receipt)
-├── config.py               # App configuration (secret key, DB URI)
-├── requirements.txt        # Python dependencies
+├── app.py                   # Flask routes & business logic
+├── models.py                # SQLAlchemy models
+├── config.py                # App configuration
+├── requirements.txt         # Python dependencies
+├── vercel.json              # Vercel deployment config
 ├── templates/
 │   ├── base.html            # Shared layout
+│   ├── index.html           # Landing page
 │   ├── login.html           # Login page
 │   ├── register.html        # Student self‑registration
 │   ├── edit_item.html       # Universal edit form
 │   ├── mobile_transfer.html # Mobile‑optimized coin transfer
+│   ├── db_offline.html      # Shown when DB is unavailable (preview mode)
 │   ├── dashboards/
 │   │   ├── principal.html   # Admin dashboard
 │   │   ├── teacher.html     # Teacher / Tutor / HOD dashboard
@@ -52,10 +57,12 @@ ScholarCash_v2/
 │   └── store/
 │       └── receipt.html     # Purchase receipt page
 ├── static/
+│   ├── css/
+│   │   └── landing.css      # Landing page styles
 │   └── js/
 │       └── html5-qrcode.js  # QR code scanning library
 └── instance/
-    └── scholarcash_v2.db    # SQLite database (auto‑created)
+    └── scholarcash_v2.db    # SQLite database (auto‑created on first run)
 ```
 
 ---
@@ -151,7 +158,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-The server starts at **<http://localhost:5000>**.
+The server starts at **http://localhost:5000**.
 
 ### Default Login
 
@@ -203,10 +210,11 @@ The server starts at **<http://localhost:5000>**.
 
 ---
 
-## 📄 API / Route Map
+## 📄 Route Map
 
 | Method | Route | Auth | Description |
 |---|---|---|---|
+| GET | `/landing` | — | Landing page |
 | GET/POST | `/login` | — | Login page |
 | GET/POST | `/register` | — | Student self‑registration |
 | GET | `/logout` | ✅ | Log out |
@@ -227,6 +235,12 @@ The server starts at **<http://localhost:5000>**.
 | GET | `/delete/<type>/<id>` | Principal | Delete any entity |
 | GET | `/mobile` | Staff | Mobile‑optimized dashboard |
 | POST | `/mobile/transfer` | Staff | Transfer coins (mobile) |
+
+---
+
+## 🌐 Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for full instructions on deploying to Vercel (preview) or a production server with PostgreSQL.
 
 ---
 
