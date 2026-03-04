@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scholarcash_v2.db'
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'landing'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -23,10 +23,16 @@ def load_user(user_id):
 
 # --- AUTH & HOME ROUTES ---
 
+@app.route('/landing')
+def landing():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    return render_template('index.html')
+
 @app.route('/')
 def home():
     if not current_user.is_authenticated:
-        return redirect(url_for('login'))
+        return redirect(url_for('landing'))
     
     if current_user.role == 'principal':
         return redirect(url_for('dashboard_principal'))
