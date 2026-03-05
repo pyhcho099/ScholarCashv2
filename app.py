@@ -6,6 +6,7 @@ import secrets
 import qrcode
 from io import BytesIO
 from datetime import datetime
+import os
 
 # --- CONFIGURATION ---
 app = Flask(__name__)

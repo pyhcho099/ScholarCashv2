@@ -1,221 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ScholarCash — A school-based virtual currency platform where staff reward students with coins that can be spent in an in-app store.">
+    <meta name="description"
+        content="ScholarCash — A school-based virtual currency platform where staff reward students with coins that can be spent in an in-app store.">
     <title>ScholarCash — The School Economy That Rewards Learning</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
 </head>
+
 <body>
 
-<!-- ===== NAVBAR ===== -->
-<nav class="navbar" id="navbar">
-    <div class="container">
-        <a href="/" class="nav-logo">
-            <span class="coin-icon">S</span>
-            ScholarCash
-        </a>
-        <div class="nav-links" id="navLinks">
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#roles">Roles</a>
-            <a href="{{ url_for('login') }}" class="nav-cta">Login</a>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="/" class="nav-logo">
+                <span class="coin-icon">S</span>
+                ScholarCash
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#roles">Roles</a>
+                <a href="{{ url_for('login') }}" class="nav-cta">Login</a>
+            </div>
+            <div class="nav-hamburger" id="navHamburger" onclick="toggleNav()">
+                <span></span><span></span><span></span>
+            </div>
         </div>
-        <div class="nav-hamburger" id="navHamburger" onclick="toggleNav()">
-            <span></span><span></span><span></span>
-        </div>
-    </div>
-</nav>
+    </nav>
 
-<!-- ===== HERO ===== -->
-<section class="hero" id="hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1>The School Economy That <span class="highlight">Rewards Learning</span></h1>
-            <p>Empower students and teachers with a modern virtual currency system designed for educational engagement. Create a thriving micro‑economy in your institution.</p>
-            <div class="hero-buttons">
-                <a href="{{ url_for('register') }}" class="btn-primary">Get Started →</a>
-                <a href="#how-it-works" class="btn-outline">Learn More</a>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="floating-coins">
-                <div class="floating-coin">$</div>
-                <div class="floating-coin">S</div>
-                <div class="floating-coin">✦</div>
-            </div>
-            <div class="hero-card">
-                <div class="card-header">
-                    <span>Student Wallet</span>
-                    <span class="status-dot"></span>
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>The School Economy That <span class="highlight">Rewards Learning</span></h1>
+                <p>Empower students and teachers with a modern virtual currency system designed for educational
+                    engagement. Create a thriving micro‑economy in your institution.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('register') }}" class="btn-primary">Get Started →</a>
+                    <a href="#how-it-works" class="btn-outline">Learn More</a>
                 </div>
-                <div class="balance-label">Current Balance</div>
-                <div class="balance-value">2,450 <span class="balance-unit">SC</span></div>
-                <div class="reward-badge">
-                    <div class="reward-icon">★</div>
-                    <div>
-                        <div class="reward-text">Perfect Attendance Award</div>
-                        <div class="reward-amount">+500 ScholarCash</div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-coins">
+                    <div class="floating-coin">$</div>
+                    <div class="floating-coin">S</div>
+                    <div class="floating-coin">✦</div>
+                </div>
+                <div class="hero-card">
+                    <div class="card-header">
+                        <span>Student Wallet</span>
+                        <span class="status-dot"></span>
+                    </div>
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-value">2,450 <span class="balance-unit">SC</span></div>
+                    <div class="reward-badge">
+                        <div class="reward-icon">★</div>
+                        <div>
+                            <div class="reward-text">Perfect Attendance Award</div>
+                            <div class="reward-amount">+500 ScholarCash</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ===== HOW IT WORKS ===== -->
-<section class="section" id="how-it-works">
-    <div class="container">
-        <h2 class="section-title reveal">How It Works</h2>
-        <p class="section-subtitle reveal">From minting to spending — manage the entire school economy seamlessly.</p>
-        <div class="steps-grid">
-            <div class="glass-card step-card reveal">
-                <div class="step-number">01</div>
-                <div class="step-icon">🏛️</div>
-                <h3>Mint</h3>
-                <p>The Principal generates the school's currency supply and kicks off the economy.</p>
-            </div>
-            <div class="glass-card step-card reveal">
-                <div class="step-number">02</div>
-                <div class="step-icon">📊</div>
-                <h3>Allocate</h3>
-                <p>HODs distribute budgets to teachers in their department based on needs.</p>
-            </div>
-            <div class="glass-card step-card reveal">
-                <div class="step-number">03</div>
-                <div class="step-icon">🎯</div>
-                <h3>Reward</h3>
-                <p>Teachers award coins instantly to students for achievements & good behaviour.</p>
-            </div>
-            <div class="glass-card step-card reveal">
-                <div class="step-number">04</div>
-                <div class="step-icon">🛍️</div>
-                <h3>Spend</h3>
-                <p>Students redeem hard‑earned coins for real rewards at the school store.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ===== FEATURES ===== -->
-<section class="section" id="features">
-    <div class="container">
-        <h2 class="section-title reveal">Premium Features</h2>
-        <p class="section-subtitle reveal">Everything you need to run a thriving school economy — built right in.</p>
-        <div class="features-grid">
-            <div class="glass-card feature-card reveal">
-                <div class="feature-icon dashboards">📈</div>
-                <div>
-                    <h3>Live Dashboards</h3>
-                    <p>Role-specific dashboards for Principal, HOD, Teachers, and Students with real‑time data and transaction tracking.</p>
+    <!-- ===== HOW IT WORKS ===== -->
+    <section class="section" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title reveal">How It Works</h2>
+            <p class="section-subtitle reveal">From minting to spending — manage the entire school economy seamlessly.
+            </p>
+            <div class="steps-grid">
+                <div class="glass-card step-card reveal">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">🏛️</div>
+                    <h3>Mint</h3>
+                    <p>The Principal generates the school's currency supply and kicks off the economy.</p>
                 </div>
-            </div>
-            <div class="glass-card feature-card reveal">
-                <div class="feature-icon store">🧾</div>
-                <div>
-                    <h3>Digital Store & Receipts</h3>
-                    <p>Students buy items from the school store and receive unique receipt codes for every purchase.</p>
+                <div class="glass-card step-card reveal">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">📊</div>
+                    <h3>Allocate</h3>
+                    <p>HODs distribute budgets to teachers in their department based on needs.</p>
                 </div>
-            </div>
-            <div class="glass-card feature-card reveal">
-                <div class="feature-icon qr">📱</div>
-                <div>
-                    <h3>QR Code Identity</h3>
-                    <p>Every student gets an auto‑generated QR code for fast, contactless identification and payments.</p>
+                <div class="glass-card step-card reveal">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">🎯</div>
+                    <h3>Reward</h3>
+                    <p>Teachers award coins instantly to students for achievements & good behaviour.</p>
                 </div>
-            </div>
-            <div class="glass-card feature-card reveal">
-                <div class="feature-icon mobile">⚡</div>
-                <div>
-                    <h3>Mobile Optimized</h3>
-                    <p>Teachers on phones are auto‑redirected to a touch‑optimized transfer interface for quick rewards.</p>
+                <div class="glass-card step-card reveal">
+                    <div class="step-number">04</div>
+                    <div class="step-icon">🛍️</div>
+                    <h3>Spend</h3>
+                    <p>Students redeem hard‑earned coins for real rewards at the school store.</p>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ===== USER ROLES ===== -->
-<section class="section" id="roles">
-    <div class="container">
-        <h2 class="section-title reveal">Roles & Permissions</h2>
-        <p class="section-subtitle reveal">A structured hierarchy ensures control, accountability, and transparency.</p>
-        <div class="roles-grid">
-            <div class="glass-card role-card reveal">
-                <div class="role-avatar principal">👑</div>
-                <span class="role-tag principal">Administrator</span>
-                <h3>Principal</h3>
-                <p>Controls total supply, manages branches, classes, staff, store items, and oversees all transactions.</p>
-            </div>
-            <div class="glass-card role-card reveal">
-                <div class="role-avatar hod">🎓</div>
-                <span class="role-tag hod">Manager</span>
-                <h3>Dept. Head</h3>
-                <p>Receives budget from Principal, distributes coins to teachers, and monitors branch statistics.</p>
-            </div>
-            <div class="glass-card role-card reveal">
-                <div class="role-avatar teacher">📝</div>
-                <span class="role-tag teacher">Distributor</span>
-                <h3>Teacher / Tutor</h3>
-                <p>Rewards students with coins for performance. Tutors can also add students to their classes.</p>
-            </div>
-            <div class="glass-card role-card reveal">
-                <div class="role-avatar student">🎒</div>
-                <span class="role-tag student">User</span>
-                <h3>Student</h3>
-                <p>Earns coins, views history, browses the school store, and redeems rewards with unique codes.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ===== CTA BANNER ===== -->
-<section class="section cta-section">
-    <div class="container">
-        <div class="cta-banner reveal">
-            <h2>Ready to transform your school?</h2>
-            <p>Join the educational revolution. Implement ScholarCash today and watch student engagement soar.</p>
-            <div class="cta-buttons">
-                <a href="{{ url_for('register') }}" class="btn-primary">Create Account →</a>
-                <a href="{{ url_for('login') }}" class="btn-outline">Sign In</a>
+    <!-- ===== FEATURES ===== -->
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title reveal">Premium Features</h2>
+            <p class="section-subtitle reveal">Everything you need to run a thriving school economy — built right in.
+            </p>
+            <div class="features-grid">
+                <div class="glass-card feature-card reveal">
+                    <div class="feature-icon dashboards">📈</div>
+                    <div>
+                        <h3>Live Dashboards</h3>
+                        <p>Role-specific dashboards for Principal, HOD, Teachers, and Students with real‑time data and
+                            transaction tracking.</p>
+                    </div>
+                </div>
+                <div class="glass-card feature-card reveal">
+                    <div class="feature-icon store">🧾</div>
+                    <div>
+                        <h3>Digital Store & Receipts</h3>
+                        <p>Students buy items from the school store and receive unique receipt codes for every purchase.
+                        </p>
+                    </div>
+                </div>
+                <div class="glass-card feature-card reveal">
+                    <div class="feature-icon qr">📱</div>
+                    <div>
+                        <h3>QR Code Identity</h3>
+                        <p>Every student gets an auto‑generated QR code for fast, contactless identification and
+                            payments.</p>
+                    </div>
+                </div>
+                <div class="glass-card feature-card reveal">
+                    <div class="feature-icon mobile">⚡</div>
+                    <div>
+                        <h3>Mobile Optimized</h3>
+                        <p>Teachers on phones are auto‑redirected to a touch‑optimized transfer interface for quick
+                            rewards.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-    <div class="container">
-        <p>Built as a college project · <a href="https://github.com/pyhcho099/ScholarCashv2" target="_blank">View on GitHub ↗</a> · © 2026 ScholarCash</p>
-    </div>
-</footer>
+    <!-- ===== USER ROLES ===== -->
+    <section class="section" id="roles">
+        <div class="container">
+            <h2 class="section-title reveal">Roles & Permissions</h2>
+            <p class="section-subtitle reveal">A structured hierarchy ensures control, accountability, and transparency.
+            </p>
+            <div class="roles-grid">
+                <div class="glass-card role-card reveal">
+                    <div class="role-avatar principal">👑</div>
+                    <span class="role-tag principal">Administrator</span>
+                    <h3>Principal</h3>
+                    <p>Controls total supply, manages branches, classes, staff, store items, and oversees all
+                        transactions.</p>
+                </div>
+                <div class="glass-card role-card reveal">
+                    <div class="role-avatar hod">🎓</div>
+                    <span class="role-tag hod">Manager</span>
+                    <h3>Dept. Head</h3>
+                    <p>Receives budget from Principal, distributes coins to teachers, and monitors branch statistics.
+                    </p>
+                </div>
+                <div class="glass-card role-card reveal">
+                    <div class="role-avatar teacher">📝</div>
+                    <span class="role-tag teacher">Distributor</span>
+                    <h3>Teacher / Tutor</h3>
+                    <p>Rewards students with coins for performance. Tutors can also add students to their classes.</p>
+                </div>
+                <div class="glass-card role-card reveal">
+                    <div class="role-avatar student">🎒</div>
+                    <span class="role-tag student">User</span>
+                    <h3>Student</h3>
+                    <p>Earns coins, views history, browses the school store, and redeems rewards with unique codes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- ===== JS ===== -->
-<script>
-// Navbar scroll effect
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 40);
-});
+    <!-- ===== CTA BANNER ===== -->
+    <section class="section cta-section">
+        <div class="container">
+            <div class="cta-banner reveal">
+                <h2>Ready to transform your school?</h2>
+                <p>Join the educational revolution. Implement ScholarCash today and watch student engagement soar.</p>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('register') }}" class="btn-primary">Create Account →</a>
+                    <a href="{{ url_for('login') }}" class="btn-outline">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-// Mobile nav toggle
-function toggleNav() {
-    document.getElementById('navLinks').classList.toggle('active');
-}
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <p>Built as a college project · <a href="https://github.com/pyhcho099/ScholarCashv2" target="_blank">View on
+                    GitHub ↗</a> · © 2026 ScholarCash</p>
+        </div>
+    </footer>
 
-// Scroll reveal (IntersectionObserver)
-const reveals = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-            setTimeout(() => entry.target.classList.add('visible'), i * 80);
-            observer.unobserve(entry.target);
+    <!-- ===== JS ===== -->
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Mobile nav toggle
+        function toggleNav() {
+            document.getElementById('navLinks').classList.toggle('active');
+            document.getElementById('navHamburger').classList.toggle('active');
         }
-    });
-}, { threshold: 0.15 });
-reveals.forEach(el => observer.observe(el));
-</script>
+
+        // Scroll reveal (IntersectionObserver)
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        reveals.forEach(el => observer.observe(el));
+    </script>
 
 </body>
+
 </html>

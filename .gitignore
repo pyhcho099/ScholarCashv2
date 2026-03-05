@@ -53,3 +53,4 @@ Minor project report(sample for reference).pdf
 generate_report.py
 report.pdf
 *.pyc
+*.md.resolved

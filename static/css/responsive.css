@@ -1,0 +1,382 @@
+/* ===== RESPONSIVE.CSS — ScholarCash Mobile Support ===== */
+/* Shared mobile-first responsive rules for all dashboard/app pages */
+
+/* ---------- BASE RESETS ---------- */
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure all images and media scale */
+img,
+video,
+iframe,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Minimum tap-target size on touch screens */
+@media (pointer: coarse) {
+
+    a,
+    button,
+    input[type="submit"],
+    select {
+        min-height: 44px;
+    }
+}
+
+/* ---------- RESPONSIVE NAVBAR (dashboard pages) ---------- */
+.navbar {
+    position: relative;
+}
+
+.navbar .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+}
+
+.navbar .nav-links-dash {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.navbar .hamburger-btn {
+    display: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px;
+    min-height: 44px;
+    min-width: 44px;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar .hamburger-btn span {
+    display: block;
+    width: 24px;
+    height: 2.5px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Hamburger → X animation */
+.navbar .hamburger-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.navbar .hamburger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar .hamburger-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* ---------- ROW & COL STACKING ---------- */
+.row {
+    flex-wrap: wrap;
+}
+
+/* ---------- TABLE RESPONSIVE WRAPPER ---------- */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+    min-width: 500px;
+}
+
+/* ---------- UTILITY CLASSES ---------- */
+.mobile-stack {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.mobile-full {
+    width: 100%;
+}
+
+/* ---------- FORM IMPROVEMENTS ---------- */
+input,
+select,
+textarea {
+    font-size: 16px;
+    /* Prevents iOS zoom on focus */
+}
+
+/* ---------- TABLET BREAKPOINT (768px) ---------- */
+@media (max-width: 768px) {
+
+    /* Navbar hamburger visible */
+    .navbar .hamburger-btn {
+        display: flex;
+    }
+
+    .navbar .nav-links-dash {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #333;
+        padding: 12px 15px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        z-index: 99;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar .nav-links-dash.active {
+        display: flex;
+    }
+
+    .navbar .nav-links-dash a {
+        padding: 10px;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+    .navbar .nav-links-dash a:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Row/Col stacking */
+    .row {
+        flex-direction: column;
+    }
+
+    .col {
+        min-width: 100% !important;
+    }
+
+    /* Container padding reduction */
+    .container {
+        padding: 12px !important;
+    }
+
+    /* Stats box */
+    .stats-box {
+        padding: 15px;
+    }
+
+    /* Store grid smaller cards */
+    .store-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+
+    /* Flex forms → stack */
+    .form-flex-row,
+    form>div[style*="display: flex"],
+    [style*="display: flex; gap: 10px; align-items: flex-end"],
+    [style*="display: flex; gap: 10px; flex-wrap: wrap"],
+    [style*="display: flex; gap: 15px"] {
+        flex-direction: column !important;
+    }
+
+    .form-flex-row>*,
+    form>div[style*="display: flex"]>div {
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    /* Budget allocation box — stack flex layout */
+    [style*="display: flex; justify-content: space-between; align-items: center"] {
+        flex-direction: column !important;
+        text-align: center !important;
+    }
+
+    [style*="display: flex; justify-content: space-between; align-items: center"]>div[style*="text-align: right"] {
+        text-align: center !important;
+        margin-top: 12px;
+    }
+
+    /* Filter bars stack vertically */
+    [style*="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px;
+    }
+
+    [style*="display: flex; gap: 10px; flex-wrap: wrap"] {
+        flex-direction: column !important;
+    }
+
+    /* Grid containers for dashboard */
+    [style*="grid-template-columns: repeat(auto-fit, minmax(350px"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    [style*="grid-template-columns: repeat(auto-fit, minmax(300px"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Grid 1fr 2fr → stack */
+    [style*="grid-template-columns: 1fr 2fr"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* HOD stats grid fits better */
+    [style*="grid-template-columns: repeat(auto-fit, minmax(150px"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    /* Button full-width */
+    button[type="submit"] {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    /* Heading sizes */
+    h1 {
+        font-size: 1.5em !important;
+    }
+
+    h2 {
+        font-size: 1.3em !important;
+    }
+
+    /* Auth page card padding reduction */
+    [style*="max-width: 420px"] {
+        padding: 24px !important;
+        margin: 0 8px;
+    }
+
+    /* Budget value size */
+    [style*="font-size: 2.5em"] {
+        font-size: 1.8em !important;
+    }
+
+    [style*="font-size: 3em"] {
+        font-size: 2em !important;
+    }
+
+    /* Receipt tickets wrap */
+    .receipt-ticket {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start !important;
+    }
+
+    .receipt-ticket>div[style*="text-align: right"] {
+        text-align: left !important;
+    }
+
+    /* QR code constrain */
+    .qr-container img {
+        max-width: 160px;
+    }
+
+    /* Action buttons full-width on edit pages */
+    [style*="display: flex; gap: 10px; margin-top: 20px"] {
+        flex-direction: column !important;
+    }
+
+    [style*="display: flex; gap: 10px; margin-top: 20px"]>* {
+        flex: 1 1 100% !important;
+        text-align: center !important;
+    }
+
+    /* Student balance display */
+    .balance-huge {
+        font-size: 2.2em !important;
+    }
+
+    /* Item card in student store */
+    .item-card {
+        padding: 12px;
+    }
+}
+
+/* ---------- SMALL PHONE BREAKPOINT (480px) ---------- */
+@media (max-width: 480px) {
+
+    .container {
+        padding: 8px !important;
+    }
+
+    /* HOD stats → single column */
+    [style*="grid-template-columns: repeat(auto-fit, minmax(150px"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Even tighter padding */
+    .stats-box,
+    [style*="padding: 25px"],
+    [style*="padding: 20px; border-radius: 8px"] {
+        padding: 12px !important;
+    }
+
+    /* Auth card tighter */
+    [style*="max-width: 420px"] {
+        padding: 16px !important;
+        margin: 0 4px;
+    }
+
+    /* Font sizes */
+    h1 {
+        font-size: 1.3em !important;
+    }
+
+    h2 {
+        font-size: 1.15em !important;
+    }
+
+    h3 {
+        font-size: 1.05em !important;
+    }
+
+    /* Role badges flex wrap */
+    [style*="display: flex; gap: 8px; margin-top: 10px"] {
+        gap: 4px !important;
+    }
+
+    [style*="display: flex; gap: 8px; margin-top: 10px"] span {
+        font-size: 0.7em !important;
+        padding: 3px 8px !important;
+    }
+
+    /* Budget card tight */
+    .balance-huge {
+        font-size: 1.8em !important;
+    }
+
+    /* Table font size */
+    table {
+        font-size: 0.85em;
+    }
+
+    td,
+    th {
+        padding: 6px !important;
+    }
+
+    /* QR smaller */
+    .qr-container img {
+        max-width: 130px;
+    }
+
+    /* Code display in receipts */
+    .code-display {
+        font-size: 1em !important;
+        letter-spacing: 1px !important;
+    }
+}

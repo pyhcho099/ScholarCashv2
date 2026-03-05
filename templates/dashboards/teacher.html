@@ -1,12 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-    .tch-page { max-width: 1200px; margin: 0 auto; }
+    .tch-page {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-    .tch-header { margin-bottom: 24px; }
-    .tch-header h1 { margin: 0 0 10px; }
+    .tch-header {
+        margin-bottom: 24px;
+    }
 
-    .tch-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tch-header h1 {
+        margin: 0 0 10px;
+    }
+
+    .tch-badges {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
     .tch-badge {
         padding: 4px 14px;
         border-radius: 20px;
@@ -16,10 +29,27 @@
         align-items: center;
         gap: 5px;
     }
-    .tch-badge.hod { background: var(--color-accent-purple); color: white; }
-    .tch-badge.tutor { background: var(--color-accent-blue); color: white; }
-    .tch-badge.subject { background: var(--color-primary); color: white; }
-    .tch-badge.branch { background: var(--color-surface-sunken); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+
+    .tch-badge.hod {
+        background: var(--color-accent-purple);
+        color: white;
+    }
+
+    .tch-badge.tutor {
+        background: var(--color-accent-blue);
+        color: white;
+    }
+
+    .tch-badge.subject {
+        background: var(--color-primary);
+        color: white;
+    }
+
+    .tch-badge.branch {
+        background: var(--color-surface-sunken);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
 
     /* Budget Card */
     .tch-budget {
@@ -32,6 +62,7 @@
         position: relative;
         overflow: hidden;
     }
+
     .tch-budget::before {
         content: '';
         position: absolute;
@@ -43,9 +74,32 @@
         border-radius: 50%;
         opacity: 0.5;
     }
-    .tch-budget h2 { color: var(--color-primary-dark); font-size: 0.95em; margin: 0 0 8px; font-weight: 600; position: relative; }
-    .tch-budget .amount { color: var(--color-primary); font-size: 3em; font-weight: 800; margin: 0; letter-spacing: -0.03em; line-height: 1.1; position: relative; }
-    .tch-budget .sublabel { color: var(--color-primary-dark); font-size: 0.85em; margin: 6px 0 0; position: relative; opacity: 0.8; }
+
+    .tch-budget h2 {
+        color: var(--color-primary-dark);
+        font-size: 0.95em;
+        margin: 0 0 8px;
+        font-weight: 600;
+        position: relative;
+    }
+
+    .tch-budget .amount {
+        color: var(--color-primary);
+        font-size: 3em;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        position: relative;
+    }
+
+    .tch-budget .sublabel {
+        color: var(--color-primary-dark);
+        font-size: 0.85em;
+        margin: 6px 0 0;
+        position: relative;
+        opacity: 0.8;
+    }
 
     .tch-low-balance {
         background: var(--color-danger-bg);
@@ -70,6 +124,7 @@
         margin-bottom: 24px;
         border: 1.5px solid #ddd6fe;
     }
+
     .tch-hod-panel h3 {
         margin: 0 0 20px;
         color: var(--color-accent-purple);
@@ -84,6 +139,7 @@
         gap: 14px;
         margin-bottom: 24px;
     }
+
     .tch-stat-card {
         background: var(--color-surface-sunken);
         padding: 16px;
@@ -91,8 +147,20 @@
         text-align: center;
         border: 1px solid var(--color-border);
     }
-    .tch-stat-card p:first-child { margin: 0; color: var(--color-text-muted); font-size: 0.8em; font-weight: 500; }
-    .tch-stat-card p:last-child { margin: 6px 0 0; font-size: 1.7em; font-weight: 800; color: var(--color-accent-purple); }
+
+    .tch-stat-card p:first-child {
+        margin: 0;
+        color: var(--color-text-muted);
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+
+    .tch-stat-card p:last-child {
+        margin: 6px 0 0;
+        font-size: 1.7em;
+        font-weight: 800;
+        color: var(--color-accent-purple);
+    }
 
     .tch-allocate-form {
         background: var(--color-surface-sunken);
@@ -100,12 +168,44 @@
         border-radius: var(--radius-md);
         border: 1px solid var(--color-border);
     }
-    .tch-allocate-form h4 { margin: 0 0 14px; color: var(--color-text); font-size: 0.95em; display: flex; align-items: center; gap: 8px; }
-    .tch-allocate-form form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
-    .tch-allocate-form .field { flex: 2; min-width: 180px; }
-    .tch-allocate-form .field-sm { flex: 1; min-width: 100px; }
-    .tch-allocate-form label { font-size: 0.8em; margin-bottom: 4px; }
-    .tch-allocate-form input, .tch-allocate-form select { margin: 0; padding: 10px 12px; }
+
+    .tch-allocate-form h4 {
+        margin: 0 0 14px;
+        color: var(--color-text);
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tch-allocate-form form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+    }
+
+    .tch-allocate-form .field {
+        flex: 2;
+        min-width: 180px;
+    }
+
+    .tch-allocate-form .field-sm {
+        flex: 1;
+        min-width: 100px;
+    }
+
+    .tch-allocate-form label {
+        font-size: 0.8em;
+        margin-bottom: 4px;
+    }
+
+    .tch-allocate-form input,
+    .tch-allocate-form select {
+        margin: 0;
+        padding: 10px 12px;
+    }
+
     .tch-allocate-form button {
         background: var(--color-accent-purple);
         padding: 10px 20px;
@@ -113,7 +213,10 @@
         width: auto;
         white-space: nowrap;
     }
-    .tch-allocate-form button:hover { background: #6d28d9; }
+
+    .tch-allocate-form button:hover {
+        background: #6d28d9;
+    }
 
     /* Main Grid */
     .tch-grid {
@@ -130,12 +233,14 @@
         box-shadow: var(--shadow-sm);
         border: 1px solid var(--color-border);
     }
+
     .tch-card h3 {
         margin: 0 0 20px;
         display: flex;
         align-items: center;
         gap: 10px;
     }
+
     .tch-card h3 .icon-circle {
         width: 34px;
         height: 34px;
@@ -152,9 +257,24 @@
         border-left: 4px solid;
         margin-bottom: 10px;
     }
-    .tch-scope-item p:first-child { margin: 0; color: var(--color-text-muted); font-size: 0.8em; }
-    .tch-scope-item p:nth-child(2) { margin: 4px 0 0; font-weight: 700; font-size: 0.95em; }
-    .tch-scope-item p:last-child { margin: 4px 0 0; font-size: 0.8em; color: var(--color-text-muted); }
+
+    .tch-scope-item p:first-child {
+        margin: 0;
+        color: var(--color-text-muted);
+        font-size: 0.8em;
+    }
+
+    .tch-scope-item p:nth-child(2) {
+        margin: 4px 0 0;
+        font-weight: 700;
+        font-size: 0.95em;
+    }
+
+    .tch-scope-item p:last-child {
+        margin: 4px 0 0;
+        font-size: 0.8em;
+        color: var(--color-text-muted);
+    }
 
     /* Tutor Section */
     .tch-tutor-panel {
@@ -165,12 +285,14 @@
         border: 1.5px solid #bfdbfe;
         box-shadow: var(--shadow-sm);
     }
+
     .tch-tutor-panel .panel-head {
         display: flex;
         align-items: center;
         gap: 14px;
         margin-bottom: 20px;
     }
+
     .tch-tutor-panel .panel-head .icon-circle {
         width: 44px;
         height: 44px;
@@ -181,8 +303,16 @@
         justify-content: center;
         flex-shrink: 0;
     }
-    .tch-tutor-panel h3 { margin: 0; }
-    .tch-tutor-panel .panel-head p { margin: 4px 0 0; color: var(--color-text-muted); font-size: 0.85em; }
+
+    .tch-tutor-panel h3 {
+        margin: 0;
+    }
+
+    .tch-tutor-panel .panel-head p {
+        margin: 4px 0 0;
+        color: var(--color-text-muted);
+        font-size: 0.85em;
+    }
 
     .tch-add-student-form {
         background: #eff6ff;
@@ -191,12 +321,45 @@
         margin-bottom: 20px;
         border: 1px solid #bfdbfe;
     }
-    .tch-add-student-form h4 { margin: 0 0 14px; color: #1e40af; font-size: 0.95em; display: flex; align-items: center; gap: 8px; }
-    .tch-add-student-form form { display: flex; gap: 10px; flex-wrap: wrap; }
-    .tch-add-student-form input { flex: 2; min-width: 140px; padding: 10px 12px; margin: 0; border: 1.5px solid #bfdbfe; }
-    .tch-add-student-form input:focus { border-color: var(--color-accent-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-    .tch-add-student-form button { background: var(--color-accent-blue); width: auto; padding: 10px 20px; white-space: nowrap; }
-    .tch-add-student-form button:hover { background: #1d4ed8; }
+
+    .tch-add-student-form h4 {
+        margin: 0 0 14px;
+        color: #1e40af;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tch-add-student-form form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .tch-add-student-form input {
+        flex: 2;
+        min-width: 140px;
+        padding: 10px 12px;
+        margin: 0;
+        border: 1.5px solid #bfdbfe;
+    }
+
+    .tch-add-student-form input:focus {
+        border-color: var(--color-accent-blue);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .tch-add-student-form button {
+        background: var(--color-accent-blue);
+        width: auto;
+        padding: 10px 20px;
+        white-space: nowrap;
+    }
+
+    .tch-add-student-form button:hover {
+        background: #1d4ed8;
+    }
 
     .tch-student-balance {
         padding: 4px 12px;
@@ -212,7 +375,10 @@
         font-size: 0.9em;
         transition: opacity var(--transition-fast);
     }
-    .tch-action-link:hover { opacity: 0.7; }
+
+    .tch-action-link:hover {
+        opacity: 0.7;
+    }
 
     /* Transaction card */
     .tch-tx-panel {
@@ -222,6 +388,7 @@
         box-shadow: var(--shadow-sm);
         border: 1px solid var(--color-border);
     }
+
     .tch-tx-panel h3 {
         margin: 0 0 20px;
         display: flex;
@@ -230,10 +397,21 @@
     }
 
     @media (max-width: 768px) {
-        .tch-grid { grid-template-columns: 1fr; }
-        .tch-allocate-form form { flex-direction: column; }
-        .tch-add-student-form form { flex-direction: column; }
-        .tch-add-student-form input { min-width: 100%; }
+        .tch-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .tch-allocate-form form {
+            flex-direction: column;
+        }
+
+        .tch-add-student-form form {
+            flex-direction: column;
+        }
+
+        .tch-add-student-form input {
+            min-width: 100%;
+        }
     }
 </style>
 
@@ -245,19 +423,27 @@
         <div class="tch-badges">
             {% if is_hod %}
             <span class="tch-badge hod">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
+                </svg>
                 HOD
             </span>
             {% endif %}
             {% if is_tutor %}
             <span class="tch-badge tutor">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
                 Class Tutor
             </span>
             {% endif %}
             {% if is_subject_teacher %}
             <span class="tch-badge subject">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
                 Subject Teacher
             </span>
             {% endif %}
@@ -273,257 +459,292 @@
         <p class="amount">{{ current_user.balance }}</p>
         <p class="sublabel">coins available</p>
 
-        {% if current_user.balance < 50 %}
-        <div class="tch-low-balance">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        {% if current_user.balance < 50 %} <div class="tch-low-balance">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
             Low Balance! Contact Principal for more funds
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- HOD Dashboard Section -->
-    {% if is_hod %}
-    <div class="tch-hod-panel">
-        <h3>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-purple)" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
-            HOD Control Panel
-        </h3>
-
-        <!-- Branch Stats -->
-        <div class="tch-stat-grid">
-            <div class="tch-stat-card">
-                <p>Students</p>
-                <p>{{ branch_stats.students }}</p>
-            </div>
-            <div class="tch-stat-card">
-                <p>Teachers</p>
-                <p>{{ branch_stats.teachers }}</p>
-            </div>
-            <div class="tch-stat-card">
-                <p>Classes</p>
-                <p>{{ branch_stats.classes }}</p>
-            </div>
-            <div class="tch-stat-card">
-                <p>Total Coins</p>
-                <p>{{ branch_stats.balance }}</p>
-            </div>
-        </div>
-
-        <!-- Allocate to Teachers -->
-        {% if branch_staff %}
-        <div class="tch-allocate-form">
-            <h4>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-purple)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                Allocate Coins to Branch Teachers
-            </h4>
-            <form action="/hod/allocate" method="POST">
-                <div class="field">
-                    <label>Select Teacher</label>
-                    <select name="teacher_id" required>
-                        <option value="">-- Choose Teacher --</option>
-                        {% for staff in branch_staff %}
-                        <option value="{{ staff.id }}">{{ staff.name }} ({{ staff.role|upper }}) - Balance: {{ staff.balance }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="field-sm">
-                    <label>Amount</label>
-                    <input type="number" name="amount" required min="1" max="{{ current_user.balance }}">
-                </div>
-                <div class="field">
-                    <label>Reason</label>
-                    <input type="text" name="reason" placeholder="Monthly budget" required>
-                </div>
-                <button type="submit">Allocate</button>
-            </form>
-        </div>
-        {% endif %}
     </div>
     {% endif %}
+</div>
 
-    <!-- Main Actions Grid -->
-    <div class="tch-grid">
+<!-- HOD Dashboard Section -->
+{% if is_hod %}
+<div class="tch-hod-panel">
+    <h3>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-purple)"
+            stroke-width="2">
+            <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
+        </svg>
+        HOD Control Panel
+    </h3>
 
-        <!-- Send Coins Card -->
-        <div class="tch-card">
-            <h3>
-                <span class="icon-circle" style="background: var(--color-primary-100);">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </span>
-                Send Coins to Students
-            </h3>
+    <!-- Branch Stats -->
+    <div class="tch-stat-grid">
+        <div class="tch-stat-card">
+            <p>Students</p>
+            <p>{{ branch_stats.students }}</p>
+        </div>
+        <div class="tch-stat-card">
+            <p>Teachers</p>
+            <p>{{ branch_stats.teachers }}</p>
+        </div>
+        <div class="tch-stat-card">
+            <p>Classes</p>
+            <p>{{ branch_stats.classes }}</p>
+        </div>
+        <div class="tch-stat-card">
+            <p>Total Coins</p>
+            <p>{{ branch_stats.balance }}</p>
+        </div>
+    </div>
 
-            {% set all_students = branch_students if is_subject_teacher or is_hod else class_students %}
+    <!-- Allocate to Teachers -->
+    {% if branch_staff %}
+    <div class="tch-allocate-form">
+        <h4>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-purple)"
+                stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+            Allocate Coins to Branch Teachers
+        </h4>
+        <form action="/hod/allocate" method="POST">
+            <div class="field">
+                <label>Select Teacher</label>
+                <select name="teacher_id" required>
+                    <option value="">-- Choose Teacher --</option>
+                    {% for staff in branch_staff %}
+                    <option value="{{ staff.id }}">{{ staff.name }} ({{ staff.role|upper }}) - Balance: {{ staff.balance
+                        }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field-sm">
+                <label>Amount</label>
+                <input type="number" name="amount" required min="1" max="{{ current_user.balance }}">
+            </div>
+            <div class="field">
+                <label>Reason</label>
+                <input type="text" name="reason" placeholder="Monthly budget" required>
+            </div>
+            <button type="submit">Allocate</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
 
-            {% if all_students %}
-            <form action="/teacher/transfer" method="POST">
-                <div style="margin-bottom: 14px;">
-                    <label>Select Student</label>
-                    <select name="receiver_id" required style="margin: 0; padding: 10px 12px;">
-                        <option value="">-- Choose Student --</option>
-                        {% for student in all_students %}
-                        <option value="{{ student.id }}">
-                            {{ student.name }} ({{ student.assigned_class.name }}) - Balance: {{ student.balance }}
-                        </option>
-                        {% endfor %}
-                    </select>
+<!-- Main Actions Grid -->
+<div class="tch-grid">
+
+    <!-- Send Coins Card -->
+    <div class="tch-card">
+        <h3>
+            <span class="icon-circle" style="background: var(--color-primary-100);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)"
+                    stroke-width="2.5">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+            </span>
+            Send Coins to Students
+        </h3>
+
+        {% set all_students = branch_students if is_subject_teacher or is_hod else class_students %}
+
+        {% if all_students %}
+        <form action="/teacher/transfer" method="POST">
+            <div style="margin-bottom: 14px;">
+                <label>Select Student</label>
+                <select name="receiver_id" required style="margin: 0; padding: 10px 12px;">
+                    <option value="">-- Choose Student --</option>
+                    {% for student in all_students %}
+                    <option value="{{ student.id }}">
+                        {{ student.name }} ({{ student.assigned_class.name }}) - Balance: {{ student.balance }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 14px;">
+                <div>
+                    <label>Amount</label>
+                    <input type="number" name="amount" placeholder="10" required min="1"
+                        max="{{ current_user.balance }}" style="margin: 0; padding: 10px 12px;">
                 </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 14px;">
-                    <div>
-                        <label>Amount</label>
-                        <input type="number" name="amount" placeholder="10" required min="1" max="{{ current_user.balance }}"
-                            style="margin: 0; padding: 10px 12px;">
-                    </div>
-                    <div>
-                        <label>Reason</label>
-                        <input type="text" name="reason" placeholder="Good behavior, Homework..." required
-                            style="margin: 0; padding: 10px 12px;">
-                    </div>
+                <div>
+                    <label>Reason</label>
+                    <input type="text" name="reason" placeholder="Good behavior, Homework..." required
+                        style="margin: 0; padding: 10px 12px;">
                 </div>
+            </div>
 
-                <button type="submit" style="background: var(--color-primary);">
-                    Send Coins
-                </button>
-            </form>
-            {% else %}
-            <div style="background: var(--color-surface-sunken); padding: 24px; border-radius: var(--radius-md); text-align: center; color: var(--color-text-muted);">
-                <p style="margin: 0;">No students available in your scope</p>
+            <button type="submit" style="background: var(--color-primary);">
+                Send Coins
+            </button>
+        </form>
+        {% else %}
+        <div
+            style="background: var(--color-surface-sunken); padding: 24px; border-radius: var(--radius-md); text-align: center; color: var(--color-text-muted);">
+            <p style="margin: 0;">No students available in your scope</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Quick Info Card -->
+    <div class="tch-card">
+        <h3>My Scope</h3>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            {% if is_hod %}
+            <div class="tch-scope-item" style="background: #faf5ff; border-color: var(--color-accent-purple);">
+                <p>HOD Of</p>
+                <p style="color: var(--color-accent-purple);">{{ my_branch.name }} Branch</p>
+                <p>Manages all teachers & students</p>
+            </div>
+            {% endif %}
+
+            {% if is_tutor %}
+            <div class="tch-scope-item" style="background: #eff6ff; border-color: var(--color-accent-blue);">
+                <p>Tutor Of</p>
+                {% for cls in current_user.tutor_of_class %}
+                <p style="color: var(--color-accent-blue);">{{ cls.name }}</p>
+                {% endfor %}
+                <p>Can add/manage class students</p>
+            </div>
+            {% endif %}
+
+            {% if is_subject_teacher and not is_hod %}
+            <div class="tch-scope-item"
+                style="background: var(--color-primary-50); border-color: var(--color-primary);">
+                <p>Teaching In</p>
+                <p style="color: var(--color-primary);">{{ my_branch.name }} Branch</p>
+                <p>Can reward any branch student</p>
             </div>
             {% endif %}
         </div>
+    </div>
+</div>
 
-        <!-- Quick Info Card -->
-        <div class="tch-card">
-            <h3>My Scope</h3>
-
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                {% if is_hod %}
-                <div class="tch-scope-item" style="background: #faf5ff; border-color: var(--color-accent-purple);">
-                    <p>HOD Of</p>
-                    <p style="color: var(--color-accent-purple);">{{ my_branch.name }} Branch</p>
-                    <p>Manages all teachers & students</p>
-                </div>
-                {% endif %}
-
-                {% if is_tutor %}
-                <div class="tch-scope-item" style="background: #eff6ff; border-color: var(--color-accent-blue);">
-                    <p>Tutor Of</p>
-                    {% for cls in current_user.tutor_of_class %}
-                    <p style="color: var(--color-accent-blue);">{{ cls.name }}</p>
-                    {% endfor %}
-                    <p>Can add/manage class students</p>
-                </div>
-                {% endif %}
-
-                {% if is_subject_teacher and not is_hod %}
-                <div class="tch-scope-item" style="background: var(--color-primary-50); border-color: var(--color-primary);">
-                    <p>Teaching In</p>
-                    <p style="color: var(--color-primary);">{{ my_branch.name }} Branch</p>
-                    <p>Can reward any branch student</p>
-                </div>
-                {% endif %}
-            </div>
+<!-- Tutor Class Management -->
+{% if is_tutor %}
+<div class="tch-tutor-panel">
+    <div class="panel-head">
+        <span class="icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c3 3 9 3 12 0v-5" />
+            </svg>
+        </span>
+        <div>
+            <h3>Class Tutor Management</h3>
+            <p>Managing: {% for cls in current_user.tutor_of_class %}{{ cls.name }}{% if not loop.last %}, {% endif %}{%
+                endfor %}</p>
         </div>
     </div>
 
-    <!-- Tutor Class Management -->
-    {% if is_tutor %}
-    <div class="tch-tutor-panel">
-        <div class="panel-head">
-            <span class="icon-circle">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-            </span>
-            <div>
-                <h3>Class Tutor Management</h3>
-                <p>Managing: {% for cls in current_user.tutor_of_class %}{{ cls.name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
-            </div>
-        </div>
+    <!-- Add Student Form -->
+    <div class="tch-add-student-form">
+        <h4>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add New Student
+        </h4>
+        <form action="/tutor/add_student" method="POST">
+            <input type="text" name="name" placeholder="Student Full Name" required style="flex: 2; min-width: 150px;">
+            <input type="email" name="email" placeholder="student@email.com" required
+                style="flex: 2; min-width: 150px;">
+            <input type="text" name="password" placeholder="Set Password" required style="flex: 1; min-width: 120px;">
+            <button type="submit">Add Student</button>
+        </form>
+    </div>
 
-        <!-- Add Student Form -->
-        <div class="tch-add-student-form">
-            <h4>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Add New Student
-            </h4>
-            <form action="/tutor/add_student" method="POST">
-                <input type="text" name="name" placeholder="Student Full Name" required style="flex: 2; min-width: 150px;">
-                <input type="email" name="email" placeholder="student@email.com" required style="flex: 2; min-width: 150px;">
-                <input type="text" name="password" placeholder="Set Password" required style="flex: 1; min-width: 120px;">
-                <button type="submit">Add Student</button>
-            </form>
-        </div>
+    <!-- Class Students Table -->
+    <h4 style="margin: 0 0 14px;">Class Students ({{ class_students|length }})</h4>
 
-        <!-- Class Students Table -->
-        <h4 style="margin: 0 0 14px;">Class Students ({{ class_students|length }})</h4>
-
-        {% if class_students %}
-        <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+    {% if class_students %}
+    <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+        <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th style="padding: 12px 16px;">Name</th>
-                        <th style="padding: 12px 16px;">Email</th>
-                        <th style="padding: 12px 16px; text-align: center;">Balance</th>
-                        <th style="padding: 12px 16px; text-align: center;">Actions</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th style="text-align: center;">Balance</th>
+                        <th style="text-align: right;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for student in class_students %}
                     <tr>
                         <td style="font-weight: 500; color: var(--color-text);">{{ student.name }}</td>
-                        <td style="font-size: 0.88em;">{{ student.email }}</td>
+                        <td style="font-size: 0.9em;">{{ student.email }}</td>
                         <td style="text-align: center;">
-                            <span class="tch-student-balance" style="background: {{ 'var(--color-success-bg)' if student.balance > 0 else 'var(--color-danger-bg)' }}; color: {{ 'var(--color-success)' if student.balance > 0 else 'var(--color-danger)' }};">
-                                {{ student.balance }}
+                            <span class="badge {{ 'badge-success' if student.balance > 0 else 'badge-danger' }}">
+                                {{ student.balance }} 💰
                             </span>
                         </td>
-                        <td style="text-align: center;">
-                            <a href="/edit/user/{{ student.id }}" class="tch-action-link" style="color: var(--color-accent-blue); margin-right: 14px;">Edit</a>
-                            <a href="/delete/user/{{ student.id }}" class="tch-action-link" style="color: var(--color-danger);" onclick="return confirm('Remove {{ student.name }}?');">Remove</a>
+                        <td style="text-align: right;">
+                            <a href="/edit/user/{{ student.id }}" class="action-btn">Edit</a>
+                            <a href="/delete/user/{{ student.id }}" class="action-btn danger"
+                                onclick="return confirm('Remove {{ student.name }}?');">Remove</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <div style="text-align: center; padding: 36px; color: var(--color-text-muted); background: var(--color-surface-sunken); border-radius: var(--radius-md);">
-            <p style="margin: 0;">No students in your class yet. Add students above.</p>
-        </div>
-        {% endif %}
+    </div>
+    {% else %}
+    <div
+        style="text-align: center; padding: 36px; color: var(--color-text-muted); background: var(--color-surface-sunken); border-radius: var(--radius-md);">
+        <p style="margin: 0;">No students in your class yet. Add students above.</p>
     </div>
     {% endif %}
+</div>
+{% endif %}
 
-    <!-- Transaction History -->
-    <div class="tch-tx-panel">
-        <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            Recent Transactions
-        </h3>
+<!-- Transaction History -->
+<div class="tch-tx-panel">
+    <h3>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)"
+            stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        Recent Transactions
+    </h3>
 
-        {% if transactions %}
-        <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+    {% if transactions %}
+    <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+        <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th style="padding: 12px 16px;">Date</th>
-                        <th style="padding: 12px 16px;">Recipient</th>
-                        <th style="padding: 12px 16px; text-align: center;">Amount</th>
-                        <th style="padding: 12px 16px;">Reason</th>
+                        <th>Date</th>
+                        <th>Recipient</th>
+                        <th style="text-align: center;">Amount</th>
+                        <th>Reason</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for tx in transactions %}
                     <tr>
-                        <td style="white-space: nowrap; font-size: 0.88em;">
+                        <td style="font-family: var(--font-mono); font-size: 0.85em; color: var(--color-text-muted);">
                             {{ tx.timestamp.strftime('%d %b %Y, %H:%M') }}
                         </td>
                         <td style="font-weight: 500; color: var(--color-text);">
                             {{ tx.receiver.name if tx.receiver else 'Unknown' }}
                         </td>
                         <td style="text-align: center;">
-                            <span style="color: var(--color-danger); font-weight: 700; font-family: var(--font-mono);">-{{ tx.amount }}</span>
+                            <span style="color: var(--color-danger); font-weight: 700; font-family: var(--font-mono);">
+                                -{{ tx.amount }}
+                            </span>
                         </td>
                         <td>{{ tx.reason }}</td>
                     </tr>
@@ -531,12 +752,13 @@
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <div style="text-align: center; padding: 36px; color: var(--color-text-muted);">
-            <p style="margin: 0;">No transactions yet. Start rewarding students!</p>
-        </div>
-        {% endif %}
     </div>
+    {% else %}
+    <div style="text-align: center; padding: 36px; color: var(--color-text-muted);">
+        <p style="margin: 0;">No transactions yet. Start rewarding students!</p>
+    </div>
+    {% endif %}
+</div>
 
 </div>
 {% endblock %}
