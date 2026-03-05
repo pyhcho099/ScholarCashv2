@@ -244,6 +244,24 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for full instructions on deploying to Verce
 
 ---
 
+## Contributing
+
+We welcome contributions from everyone. To get started, please check the issues for open tasks or features. If you wish to contribute, please fork the repository and submit a pull request with your changes.
+
+## Environment Variables
+
+To run this application, you will need to set up the following environment variables:  
+- `DATABASE_URL`: URL to your database  
+- `API_KEY`: Your API key for external services  
+- `DEBUG`: Set to 'true' for development.
+
+## Troubleshooting
+
+If you encounter issues running the application, please verify the following:  
+- Ensure all dependencies are installed correctly.  
+- Check your environment variables for correctness.
+- If its runtime error create an issue.
+
 ## 📜 License
 
 This project is developed as a **college/minor project** and is provided as‑is for educational purposes.
